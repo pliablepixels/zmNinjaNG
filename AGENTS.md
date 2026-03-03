@@ -32,6 +32,7 @@
 - **Never skip `data-testid` on interactive elements** - required for e2e tests
 - **Never implement features/fixes without a GitHub issue** - create issue first, reference in commits
 - **Never add new APIs/components without updating docs** - update developer-guide in same session
+- **Never update Tauri JS or Rust packages independently** - JS `@tauri-apps/*` and Rust `tauri-plugin-*` versions must match. Update both `package.json` and `Cargo.toml` together.
 
 ---
 
@@ -315,9 +316,11 @@ npm install @capacitor/haptics@7  # Match major version
 
 2. **Install**: Match major versions for Capacitor plugins
 
-3. **Update test mocks** if needed in `app/src/tests/setup.ts`
+3. **Tauri plugins**: JS `@tauri-apps/*` and Rust `tauri-plugin-*` must have matching versions. Update both `package.json` and `Cargo.toml` together.
 
-4. **Verify**: `npm test && npm run build`
+4. **Update test mocks** if needed in `app/src/tests/setup.ts`
+
+5. **Verify**: `npm test && npm run build`
 
 ---
 

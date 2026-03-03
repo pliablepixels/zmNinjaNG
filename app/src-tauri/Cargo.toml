@@ -15,14 +15,15 @@ name = "app_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
-tauri-build = { version = "2.5.1", features = [] }
+tauri-build = { version = "2.5.5", features = [] }
 
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 log = "0.4"
-tauri = { version = "2.9.2", features = ["devtools"] }
-tauri-plugin-log = "2"
-tauri-plugin-http = "2.5.4"
-tauri-plugin-fs = "2"
-tauri-plugin-dialog = "2"
+# When running `cargo update`, also update matching @tauri-apps/* packages in package.json.
+tauri = { version = "2.10.2", features = ["devtools"] }
+tauri-plugin-log = "2.8.0"
+tauri-plugin-http = "2.5.7"
+tauri-plugin-fs = "2.4.5"
+tauri-plugin-dialog = "2.6.0"
