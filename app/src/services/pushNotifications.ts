@@ -2,28 +2,30 @@
  * Mobile Push Notifications Service
  *
  * Handles FCM push notifications for mobile platforms (iOS/Android)
- * Integrates with ZoneMinder event notification server
+ * Uses @capacitor-firebase/messaging to get FCM tokens on both platforms.
+ * Integrates with ZoneMinder event notification server.
  */
 
 import { Capacitor } from '@capacitor/core';
-import {
-  PushNotifications,
-  type Token,
-  type PushNotificationSchema,
-  type ActionPerformed,
-} from '@capacitor/push-notifications';
+import { FirebaseMessaging } from '@capacitor-firebase/messaging';
+import type { Notification } from '@capacitor-firebase/messaging';
 import { log, LogLevel } from '../lib/logger';
 import { navigationService } from '../lib/navigation';
 import { useNotificationStore } from '../stores/notifications';
 import { useProfileStore } from '../stores/profile';
 import { useAuthStore } from '../stores/auth';
 
+/**
+ * Data payload sent by zmeventnotification server via FCM.
+ * ES sends mid (monitor ID), eid (event ID), and since ES 7.x+
+ * also monitorName and cause as structured fields.
+ */
 export interface PushNotificationData {
-  monitorId?: string;
+  mid?: string;
+  eid?: string;
   monitorName?: string;
-  eventId?: string;
   cause?: string;
-  imageUrl?: string;
+  notification_foreground?: string;
 }
 
 export class MobilePushService {
@@ -43,22 +45,53 @@ export class MobilePushService {
 
     try {
       // Request permission
-      const permissionResult = await PushNotifications.requestPermissions();
+      const permissionResult = await FirebaseMessaging.requestPermissions();
 
       if (permissionResult.receive === 'granted') {
         log.push('Push notification permission granted', LogLevel.INFO);
 
-        // Setup listeners BEFORE registering to ensure we catch the registration event
+        // Setup listeners BEFORE requesting token to ensure we catch token refreshes
         if (!this.isInitialized) {
           this._setupListeners();
           this.isInitialized = true;
         }
 
-        // Always register with FCM on initialization to get the current token
-        // This ensures we retrieve the token on every app start
-        log.push('Calling PushNotifications.register()', LogLevel.INFO);
-        await PushNotifications.register();
-        log.push('PushNotifications.register() called successfully', LogLevel.INFO);
+        // Get current FCM token
+        log.push('Requesting FCM token via getToken()', LogLevel.INFO);
+        try {
+          const result = await FirebaseMessaging.getToken();
+          this.currentToken = result.token;
+          this.hasRetried = false;
+
+          log.push('FCM token received', LogLevel.INFO, {
+            token: result.token.substring(0, 20) + '...',
+          });
+
+          // Register token with ZM notification server
+          this._registerWithServer(result.token);
+        } catch (tokenError) {
+          log.push('FCM token request failed', LogLevel.ERROR, tokenError);
+
+          if (!this.hasRetried) {
+            this.hasRetried = true;
+            log.push('Retrying FCM token request once after 5s...', LogLevel.INFO);
+
+            setTimeout(async () => {
+              try {
+                const retryResult = await FirebaseMessaging.getToken();
+                this.currentToken = retryResult.token;
+
+                log.push('FCM token received on retry', LogLevel.INFO, {
+                  token: retryResult.token.substring(0, 20) + '...',
+                });
+
+                this._registerWithServer(retryResult.token);
+              } catch (e) {
+                log.push('FCM token retry failed', LogLevel.ERROR, e);
+              }
+            }, 5000);
+          }
+        }
 
         log.push('Push notifications initialized successfully', LogLevel.INFO);
       } else {
@@ -143,7 +176,10 @@ export class MobilePushService {
 
     try {
       // Remove all listeners
-      await PushNotifications.removeAllListeners();
+      await FirebaseMessaging.removeAllListeners();
+
+      // Delete FCM token
+      await FirebaseMessaging.deleteToken();
 
       // Clear token
       this.currentToken = null;
@@ -161,42 +197,23 @@ export class MobilePushService {
   // ========== PRIVATE METHODS ==========
 
   private _setupListeners(): void {
-    // Called when FCM token is received
-    PushNotifications.addListener('registration', (token: Token) => {
-      log.push('FCM token received', LogLevel.INFO, {
-        token: token.value.substring(0, 20) + '...', // Truncate for security
+    // Called when FCM token is refreshed
+    FirebaseMessaging.addListener('tokenReceived', ({ token }) => {
+      log.push('FCM token refreshed', LogLevel.INFO, {
+        token: token.substring(0, 20) + '...',
       });
 
-      this.currentToken = token.value;
-      this.hasRetried = false; // Reset retry flag on success
+      this.currentToken = token;
+      this.hasRetried = false;
 
-      // Register token with ZM notification server
-      this._registerWithServer(token.value);
-    });
-
-    // Called when registration fails
-    // Single retry after 5s delay to handle transient network issues on mobile
-    PushNotifications.addListener('registrationError', (error) => {
-      log.push('FCM registration failed', LogLevel.ERROR, error);
-
-      if (!this.hasRetried) {
-        this.hasRetried = true;
-        log.push('Retrying FCM registration once after 5s...', LogLevel.INFO);
-
-        setTimeout(async () => {
-          try {
-            await PushNotifications.register();
-          } catch (e) {
-            log.push('FCM registration retry failed', LogLevel.ERROR, e);
-          }
-        }, 5000);
-      }
+      // Register refreshed token with ZM notification server
+      this._registerWithServer(token);
     });
 
     // Called when notification is received while app is in foreground
-    PushNotifications.addListener(
-      'pushNotificationReceived',
-      (notification: PushNotificationSchema) => {
+    FirebaseMessaging.addListener(
+      'notificationReceived',
+      ({ notification }) => {
         log.push('Push notification received (foreground)', LogLevel.INFO, {
           title: notification.title,
           body: notification.body,
@@ -209,16 +226,15 @@ export class MobilePushService {
     );
 
     // Called when user taps on notification
-    PushNotifications.addListener(
-      'pushNotificationActionPerformed',
-      (action: ActionPerformed) => {
+    FirebaseMessaging.addListener(
+      'notificationActionPerformed',
+      ({ notification }) => {
         log.push('Push notification action performed', LogLevel.INFO, {
-          actionId: action.actionId,
-          notification: action.notification,
+          notification,
         });
 
         // Handle the tap action
-        this._handleNotificationAction(action);
+        this._handleNotificationAction(notification);
       }
     );
   }
@@ -248,28 +264,26 @@ export class MobilePushService {
 
   /**
    * Handle incoming push notification when app is in foreground
-   * This is called when a notification is received while the app is open
    */
-  private _handleNotification(notification: PushNotificationSchema): void {
-    const data = notification.data as PushNotificationData;
+  private _handleNotification(notification: Notification): void {
+    const data = notification.data as PushNotificationData | undefined;
 
     log.push('Processing FCM notification (foreground)', LogLevel.INFO, {
-      
       title: notification.title,
       body: notification.body,
       data: notification.data,
     });
 
     // Extract event data and add to notification store
-    if (data.monitorId && data.eventId) {
+    // ES sends mid (monitor ID) and eid (event ID) in the data payload
+    if (data?.mid && data?.eid) {
       const notificationStore = useNotificationStore.getState();
 
       // If we are connected to the event server, we will receive this event via WebSocket.
       // Ignore the push notification to avoid duplicate processing/toasts.
-      // The WebSocket handler already adds the event to the store.
       if (notificationStore.isConnected) {
         log.push('Ignoring foreground push notification - already connected to event server', LogLevel.INFO, {
-          eventId: data.eventId,
+          eventId: data.eid,
         });
         return;
       }
@@ -277,31 +291,26 @@ export class MobilePushService {
       const profileId = notificationStore.currentProfileId;
 
       if (profileId) {
-        // Construct image URL using the app's portal URL and auth token
-        // Don't use the image URL from the server as it may have incorrect format
         let imageUrl: string | undefined;
 
-        // Get current profile to construct proper image URL
-        // Access primitives directly to avoid deprecated currentProfile() getter
         const { profiles, currentProfileId } = useProfileStore.getState();
         const currentProfile = profiles.find(p => p.id === currentProfileId);
         const authStore = useAuthStore.getState();
 
         if (currentProfile && authStore.accessToken) {
-          imageUrl = `${currentProfile.portalUrl}/index.php?view=image&eid=${data.eventId}&fid=snapshot&width=600&token=${authStore.accessToken}`;
-
-          log.push('Constructed image URL for FCM notification', LogLevel.INFO, {
-            eventId: data.eventId,
-            imageUrl,
-          });
+          imageUrl = `${currentProfile.portalUrl}/index.php?view=image&eid=${data.eid}&fid=snapshot&width=600&token=${authStore.accessToken}`;
         }
 
+        // Prefer structured data fields from ES, fall back to parsing notification title/body
+        const monitorName = data.monitorName || notification.title?.replace(/\s*Alarm.*$/, '') || 'Unknown';
+        const cause = data.cause || notification.body || 'Motion detected';
+
         notificationStore.addEvent(profileId, {
-          MonitorId: parseInt(data.monitorId, 10),
-          MonitorName: data.monitorName || 'Unknown',
-          EventId: parseInt(data.eventId, 10),
-          Cause: data.cause || notification.body || 'Motion detected',
-          Name: data.monitorName || 'Unknown',
+          MonitorId: parseInt(data.mid, 10),
+          MonitorName: monitorName,
+          EventId: parseInt(data.eid, 10),
+          Cause: cause,
+          Name: monitorName,
           ImageUrl: imageUrl,
         });
       }
@@ -310,60 +319,53 @@ export class MobilePushService {
 
   /**
    * Handle notification tap action
-   * This is called when user taps on a push notification (app in background/killed)
-   * Adds the event to notification history and navigates to event detail
    */
-  private _handleNotificationAction(action: ActionPerformed): void {
-    const data = action.notification.data as PushNotificationData;
+  private _handleNotificationAction(notification: Notification): void {
+    const data = notification.data as PushNotificationData | undefined;
 
     log.push('Processing notification tap', LogLevel.INFO, {
-      actionId: action.actionId,
-      monitorId: data.monitorId,
-      eventId: data.eventId,
+      mid: data?.mid,
+      eid: data?.eid,
     });
 
-    // Add event to notification history and navigate if we have event ID
-    if (data.eventId && data.monitorId) {
+    if (data?.eid && data?.mid) {
       const notificationStore = useNotificationStore.getState();
       const profileId = notificationStore.currentProfileId;
 
       if (profileId) {
-        // Construct image URL using the app's portal URL and auth token
         let imageUrl: string | undefined;
 
-        // Access primitives directly to avoid deprecated currentProfile() getter
         const { profiles, currentProfileId } = useProfileStore.getState();
         const currentProfile = profiles.find(p => p.id === currentProfileId);
         const authStore = useAuthStore.getState();
 
         if (currentProfile && authStore.accessToken) {
-          imageUrl = `${currentProfile.portalUrl}/index.php?view=image&eid=${data.eventId}&fid=snapshot&width=600&token=${authStore.accessToken}`;
+          imageUrl = `${currentProfile.portalUrl}/index.php?view=image&eid=${data.eid}&fid=snapshot&width=600&token=${authStore.accessToken}`;
         }
 
-        // Add event to notification history (duplicate prevention handled by store)
-        // Event is added as unread initially
+        const monitorName = data.monitorName || notification.title?.replace(/\s*Alarm.*$/, '') || 'Unknown';
+        const cause = data.cause || notification.body || 'Motion detected';
+
         notificationStore.addEvent(profileId, {
-          MonitorId: parseInt(data.monitorId, 10),
-          MonitorName: data.monitorName || 'Unknown',
-          EventId: parseInt(data.eventId, 10),
-          Cause: data.cause || action.notification.body || 'Motion detected',
-          Name: data.monitorName || 'Unknown',
+          MonitorId: parseInt(data.mid, 10),
+          MonitorName: monitorName,
+          EventId: parseInt(data.eid, 10),
+          Cause: cause,
+          Name: monitorName,
           ImageUrl: imageUrl,
         });
 
-        // Mark as read since user is tapping to view the event
-        notificationStore.markEventRead(profileId, parseInt(data.eventId, 10));
+        notificationStore.markEventRead(profileId, parseInt(data.eid, 10));
 
         log.push('Added notification to history from tap action and marked as read', LogLevel.INFO, {
-          eventId: data.eventId,
+          eventId: data.eid,
           profileId,
         });
       }
 
-      // Navigate to event detail page
-      navigationService.navigateToEvent(data.eventId);
+      navigationService.navigateToEvent(data.eid);
 
-      log.push('Navigating to event detail', LogLevel.INFO, { eventId: data.eventId });
+      log.push('Navigating to event detail', LogLevel.INFO, { eventId: data.eid });
     }
   }
 }
@@ -380,7 +382,6 @@ export function getPushService(): MobilePushService {
 
 export function resetPushService(): void {
   if (pushService) {
-    // Use private _unregister to avoid sending disabled state to server during cleanup
     pushService['_unregister']().catch((error) => {
       log.push('Failed to unregister push service', LogLevel.ERROR, error);
     });

@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:857968839790:android:d1acf2187c66dd2354ea7f",
+        "mobilesdk_app_id": "1:857968839790:android:eee506e7f07f6fef54ea7f",
         "android_client_info": {
-          "package_name": "com.pliablepixels.zmng"
+          "package_name": "com.zoneminder.zmNinjaNG"
         }
       },
       "oauth_client": [],

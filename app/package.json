@@ -43,6 +43,7 @@
   "dependencies": {
     "@aparajita/capacitor-secure-storage": "^7.1.6",
     "@capacitor-community/media": "^8.0.1",
+    "@capacitor-firebase/messaging": "^7.5.0",
     "@capacitor/android": "^7.4.4",
     "@capacitor/cli": "^7.4.4",
     "@capacitor/core": "^7.4.4",
@@ -50,7 +51,6 @@
     "@capacitor/haptics": "^7.0.3",
     "@capacitor/ios": "^7.4.4",
     "@capacitor/preferences": "^7.0.2",
-    "@capacitor/push-notifications": "^7.0.3",
     "@capacitor/share": "^7.0.2",
     "@capacitor/splash-screen": "^7.0.4",
     "@hookform/resolvers": "^5.2.2",
@@ -80,6 +80,7 @@
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
     "express": "^5.1.0",
+    "firebase": "^11.10.0",
     "html5-qrcode": "^2.3.8",
     "http-proxy-middleware": "^3.0.5",
     "i18next": "^25.6.3",

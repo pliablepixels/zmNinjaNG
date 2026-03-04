@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.pliablepixels.zmng',
+  appId: 'com.zoneminder.zmNinjaNG',
   appName: 'zmNg',
   webDir: 'dist',
   server: {
@@ -22,7 +22,10 @@ const config: CapacitorConfig = {
       backgroundColor: '#000000',
       showSpinner: false,
       fadeOutDuration: 200,
-    }
+    },
+    FirebaseMessaging: {
+      presentationOptions: ['alert', 'badge', 'sound'],
+    },
   }
 };
 

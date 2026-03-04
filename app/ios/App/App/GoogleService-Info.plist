@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.pliablepixels.zmng</string>
+	<string>com.zoneminder.zmNinjaNG</string>
 	<key>PROJECT_ID</key>
 	<string>zmng-b7af6</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:857968839790:ios:c414083a9095dacc54ea7f</string>
+	<string>1:857968839790:ios:572fe062af86abcf54ea7f</string>
 </dict>
 </plist>

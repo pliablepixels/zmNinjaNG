@@ -518,11 +518,11 @@ export default function NotificationSettings() {
                     </div>
 
                     {isEnabled && (
-                      <div className="flex items-center gap-4 ml-6 pt-2 border-t">
+                      <div className="flex flex-col gap-2 ml-6 pt-2 border-t">
                         <Label htmlFor={`interval-${monitorData.Id}`} className="text-sm">
                           {t('notification_settings.check_interval')}:
                         </Label>
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                           <Input
                             id={`interval-${monitorData.Id}`}
                             type="number"
@@ -540,7 +540,7 @@ export default function NotificationSettings() {
                             data-testid={`notification-monitor-interval-${monitorData.Id}`}
                           />
                           <span className="text-sm text-muted-foreground">{t('notification_settings.seconds')}</span>
-                          <div className="flex gap-1 ml-auto">
+                          <div className="flex gap-1">
                             <Button
                               variant="outline"
                               size="sm"
