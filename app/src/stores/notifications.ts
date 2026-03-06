@@ -285,9 +285,9 @@ export const useNotificationStore = create<NotificationState>()(
       },
 
       reconnect: async () => {
-        log.notifications('Reconnecting to notification server', LogLevel.INFO);
-        // Disconnect first, then user must call connect with credentials
-        get().disconnect();
+        log.notifications('Triggering reconnect', LogLevel.INFO);
+        const service = getNotificationService();
+        service.reconnectNow();
       },
 
       // ========== Event Actions ==========

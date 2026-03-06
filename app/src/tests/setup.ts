@@ -130,6 +130,14 @@ vi.mock('@capacitor/haptics', () => ({
   },
 }));
 
+// Mock Capacitor Network
+vi.mock('@capacitor/network', () => ({
+  Network: {
+    addListener: vi.fn().mockResolvedValue({ remove: vi.fn() }),
+    getStatus: vi.fn().mockResolvedValue({ connected: true, connectionType: 'wifi' }),
+  },
+}));
+
 // Mock html5-qrcode for QR scanner tests
 vi.mock('html5-qrcode', () => ({
   Html5Qrcode: vi.fn().mockImplementation(() => ({

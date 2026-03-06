@@ -22,6 +22,7 @@ import { Capacitor } from '@capacitor/core';
 import { Platform } from '../lib/platform';
 import { getPushService } from '../services/pushNotifications';
 import { getEventPoller } from '../services/eventPoller';
+import { getNotificationService } from '../services/notifications';
 
 /**
  * NotificationHandler component.
@@ -42,6 +43,7 @@ export function NotificationHandler() {
     currentProfileId,
     connect,
     disconnect,
+    reconnect,
   } = useNotificationStore();
 
   const lastEventId = useRef<number | null>(null);
@@ -119,6 +121,99 @@ export function NotificationHandler() {
     return () => { listenerCleanup?.(); };
   }, []);
 
+  // Network change listener: reconnect when connectivity is restored
+  useEffect(() => {
+    const mode = settings?.notificationMode || 'es';
+    if (!settings?.enabled || mode !== 'es') return;
+
+    const handleOnline = () => {
+      log.notificationHandler('Network restored, triggering reconnect', LogLevel.INFO);
+      reconnect();
+    };
+
+    window.addEventListener('online', handleOnline);
+
+    // On native platforms, also use Capacitor's Network plugin for faster detection
+    let networkCleanup: (() => void) | undefined;
+
+    if (Capacitor.isNativePlatform()) {
+      import('@capacitor/network').then(({ Network }) => {
+        Network.addListener('networkStatusChange', (status) => {
+          if (status.connected) {
+            log.notificationHandler('Native network restored, triggering reconnect', LogLevel.INFO);
+            reconnect();
+          }
+        }).then((handle) => {
+          networkCleanup = () => handle.remove();
+        });
+      }).catch(() => {});
+    }
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      networkCleanup?.();
+    };
+  }, [settings?.enabled, settings?.notificationMode, reconnect]);
+
+  // Visibility change listener (desktop/web): check liveness when tab becomes visible
+  useEffect(() => {
+    const mode = settings?.notificationMode || 'es';
+    if (!settings?.enabled || mode !== 'es' || Capacitor.isNativePlatform()) return;
+
+    const handleVisibilityChange = async () => {
+      if (document.visibilityState !== 'visible') return;
+      if (!isConnected) return;
+
+      log.notificationHandler('Tab visible, checking WebSocket liveness', LogLevel.DEBUG);
+      const service = getNotificationService();
+      const alive = await service.checkAlive(5000);
+
+      if (!alive) {
+        log.notificationHandler('WebSocket not responding after tab resume, reconnecting', LogLevel.WARN);
+        reconnect();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [settings?.enabled, settings?.notificationMode, isConnected, reconnect]);
+
+  // App resume liveness check (mobile): verify WebSocket is alive when app returns to foreground
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+
+    const mode = settings?.notificationMode || 'es';
+    if (!settings?.enabled || mode !== 'es') return;
+
+    let listenerCleanup: (() => void) | undefined;
+
+    const setup = async () => {
+      try {
+        const { App: CapApp } = await import('@capacitor/app');
+
+        const listener = await CapApp.addListener('appStateChange', async ({ isActive }) => {
+          if (!isActive || !isConnected) return;
+
+          log.notificationHandler('App resumed, checking WebSocket liveness', LogLevel.DEBUG);
+          const service = getNotificationService();
+          const alive = await service.checkAlive(5000);
+
+          if (!alive) {
+            log.notificationHandler('WebSocket not responding after app resume, reconnecting', LogLevel.WARN);
+            reconnect();
+          }
+        });
+
+        listenerCleanup = () => { listener.remove(); };
+      } catch (e) {
+        log.notificationHandler('Failed to setup app resume liveness check', LogLevel.ERROR, e);
+      }
+    };
+
+    setup();
+    return () => { listenerCleanup?.(); };
+  }, [settings?.enabled, settings?.notificationMode, isConnected, reconnect]);
+
   // Listen to navigation events from services (e.g., push notifications)
   useEffect(() => {
     const unsubscribe = navigationService.addListener((event) => {
@@ -179,7 +274,7 @@ export function NotificationHandler() {
 
     log.notifications('Auto-connecting to notification server', LogLevel.INFO, { profileId: currentProfile.id, });
 
-    const attemptConnect = async (retries = 3) => {
+    const attemptConnect = async () => {
       try {
         const password = await getDecryptedPassword(currentProfile.id);
 
@@ -196,21 +291,20 @@ export function NotificationHandler() {
           await connect(currentProfile.id, currentProfile.username!, password, currentProfile.portalUrl);
           log.notifications('Auto-connected to notification server', LogLevel.INFO, { profileId: currentProfile.id, });
         } else {
-          throw new Error('Failed to get password');
+          log.notifications('Auto-connect failed - could not decrypt password', LogLevel.ERROR, {
+            profileId: currentProfile.id,
+          });
         }
       } catch (error) {
-        log.notifications(`Auto-connect failed (retries left: ${retries})`, LogLevel.ERROR, {
+        // The service handles reconnection internally via exponential backoff
+        log.notifications('Auto-connect failed, service will retry automatically', LogLevel.ERROR, {
           profileId: currentProfile.id,
           error,
         });
-
-        if (retries > 0) {
-          setTimeout(() => attemptConnect(retries - 1), 2000);
-        }
       }
     };
 
-    // Add a small delay to ensure everything is initialized
+    // Small delay to ensure store initialization is complete
     setTimeout(() => attemptConnect(), 500);
   }, [settings?.enabled, settings?.notificationMode, settings?.host, isConnected, connectionState, currentProfile, connect, getDecryptedPassword]);
 
