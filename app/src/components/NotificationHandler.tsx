@@ -20,7 +20,6 @@ import { navigationService } from '../lib/navigation';
 import { useTranslation } from 'react-i18next';
 import { Capacitor } from '@capacitor/core';
 import { getPushService } from '../services/pushNotifications';
-import { Platform } from '../lib/platform';
 import { getEventPoller } from '../services/eventPoller';
 
 /**
@@ -149,8 +148,8 @@ export function NotificationHandler() {
     const mode = settings.notificationMode || 'es';
 
     if (mode === 'direct') {
-      // Direct mode on desktop (Tauri): start event poller
-      if (Platform.isTauri) {
+      if (!Capacitor.isNativePlatform()) {
+        // Non-native (Tauri desktop or web browser): start event poller
         hasAttemptedAutoConnect.current = true;
         log.notifications('Starting event poller for direct mode (desktop)', LogLevel.INFO, {
           profileId: currentProfile.id,
@@ -158,7 +157,7 @@ export function NotificationHandler() {
         const poller = getEventPoller();
         poller.start(currentProfile.id);
       }
-      // Direct mode on mobile: push notifications handle everything via FCM
+      // Native (mobile): push notifications handle everything via FCM
       // (initialized separately in the push notifications effect above)
       return;
     }

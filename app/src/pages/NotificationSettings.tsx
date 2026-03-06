@@ -38,7 +38,6 @@ import { Capacitor } from '@capacitor/core';
 import { useTranslation } from 'react-i18next';
 import { log, LogLevel } from '../lib/logger';
 import { checkNotificationsApiSupport } from '../api/notifications';
-import { Platform } from '../lib/platform';
 import { getEventPoller } from '../services/eventPoller';
 import type { NotificationMode } from '../types/notifications';
 
@@ -188,7 +187,8 @@ export default function NotificationSettings() {
       disconnect();
       setNotificationMode(currentProfile.id, 'direct');
 
-      if (Platform.isTauri) {
+      if (!Capacitor.isNativePlatform()) {
+        // Non-native (Tauri desktop or web browser): start event poller
         const poller = getEventPoller();
         poller.start(currentProfile.id);
       }
