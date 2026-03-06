@@ -125,8 +125,15 @@ the app alive.
 4. **Stream Keep-Alive**: Streaming connections (``useMonitorStream``)
    monitor their own health. If a stream dies (socket close), they
    automatically try to reconnect with a new “Connection Key”
-5. **WebSocket Keepalive**: Push notification WebSocket sends ping every
-   60 seconds to maintain connection
+5. **WebSocket Keepalive & Reconnect**: The notification WebSocket
+   (``services/notifications.ts``) sends a version-request ping every 60
+   seconds to maintain the connection. On disconnection, it reconnects
+   automatically using exponential backoff with jitter (2s, 4s, 8s, ...
+   capped at 2 minutes). An ``intentionalDisconnect`` flag ensures only
+   user-initiated disconnects stop reconnection; network drops always
+   retry. On mobile, ``@capacitor/network`` triggers immediate reconnect
+   when connectivity is restored. On desktop, a ``visibilitychange``
+   listener checks liveness when a tab becomes visible
 6. **Daemon Status**: Server page checks ZoneMinder daemon health every
    30 seconds
 
@@ -155,7 +162,12 @@ When the user re-opens the app: - **State**: App comes to “Foreground”.
 - **Check**: We check ``last_interaction`` timestamp. - **Security**: If
 enabled, we might ask for Biometric Auth (FaceID) before revealing the
 screen. - **Reconnect**: Video streams detect the interruption and
-reconnect.
+reconnect. - **WebSocket Liveness**: ``NotificationHandler`` sends a
+ping to the notification WebSocket and waits for a response. If the
+server doesn't respond within 5 seconds, the connection is treated as
+dead and an immediate reconnect is triggered. - **Badge Clear**: Delivered
+notifications and the native badge are cleared via
+``FirebaseMessaging.removeAllDeliveredNotifications()``.
 
 6. Navigation Lifecycle
 -----------------------

@@ -1097,6 +1097,58 @@ duplication:
 These changes reduced code by ~600+ lines while improving
 maintainability.
 
+Notification Services (services/)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The notification system spans three services that handle different delivery
+mechanisms:
+
+**``services/notifications.ts``** — WebSocket connection to ZoneMinder Event
+Server (ES mode). Handles real-time alarm events via ``zmeventnotification.pl``.
+
+- Singleton via ``getNotificationService()``
+- Exponential backoff reconnection with jitter (2s base, 2min cap)
+- ``intentionalDisconnect`` flag prevents reconnect after user-initiated
+  disconnect; network failures always retry
+- ``checkAlive(timeoutMs)`` liveness probe used on app resume and tab
+  visibility change
+- ``reconnectNow()`` for immediate reconnect on network restore
+- 60-second keepalive ping
+- ``reconnectAttempts`` resets only after successful authentication
+
+**``services/pushNotifications.ts``** — FCM push notification handling for
+iOS and Android.
+
+- Singleton via ``getPushService()``
+- Requests permission, obtains FCM token, registers with ZM server
+- In ES mode: registers token via WebSocket; in Direct mode: via REST API
+- Foreground notifications are processed and added to the notification store
+  (but ignored if WebSocket is already connected, to avoid duplicates)
+- Handles notification tap to navigate to event detail
+
+**``services/eventPoller.ts``** — Polls ZM events API for new events in
+Direct notification mode on desktop/web.
+
+- Singleton via ``getEventPoller()``
+- Started by ``NotificationHandler`` when ``notificationMode === 'direct'``
+  and ``Platform.isDesktopOrWeb`` (not used on mobile — FCM handles delivery)
+- Uses recursive ``setTimeout`` so interval changes take effect on next tick
+- Configurable polling interval per-profile (default 30s)
+- Optional ``Notes REGEXP:detected:`` filter for object-detection-only events
+- Maintains a seen-event set (capped at 500) to avoid duplicate notifications
+
+**``components/NotificationHandler.tsx``** — Headless component that
+orchestrates the notification lifecycle:
+
+- Auto-connects WebSocket (ES mode) or starts poller (Direct mode on desktop)
+- Listens for ``window.online`` and ``@capacitor/network`` to trigger
+  reconnect on network restore
+- Desktop: ``visibilitychange`` listener checks WebSocket liveness on tab
+  resume
+- Mobile: ``appStateChange`` listener checks WebSocket liveness on app resume
+- Displays toast notifications for new events
+- Clears native badges on app resume (iOS/Android)
+
 --------------
 
 Next Steps

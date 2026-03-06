@@ -97,10 +97,12 @@ Native device feature access for iOS and Android. - **Core**: Platform
 detection (``isNativePlatform``). - **Filesystem**: Saving snapshots and
 logs. - **PushNotifications**: Handling APNS/FCM tokens for event
 alerts. - **Preferences**: Native storage for secure credentials (along
-with ``@aparajita/capacitor-secure-storage``). - **Why**: Allows
-building ios/android apps using the same web codebase. We only drop down
-to native code (plugins) when we need hardware access that the web API
-doesn’t provide.
+with ``@aparajita/capacitor-secure-storage``). - **Network**: Detects
+network status changes on native platforms (WiFi/cellular transitions).
+Used by ``NotificationHandler`` to trigger immediate WebSocket reconnect
+when connectivity is restored. - **Why**: Allows building ios/android
+apps using the same web codebase. We only drop down to native code
+(plugins) when we need hardware access that the web API doesn’t provide.
 
 Internationalization
 --------------------

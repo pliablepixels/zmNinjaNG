@@ -467,13 +467,15 @@ Global / App-Level Timers
 |             |                               |                   | 5 minutes     |
 |             |                               |                   | before expiry |
 +-------------+-------------------------------+-------------------+---------------+
-| WebSocket   | ``services/notifications.ts`` | **60 seconds**    | Sends ping to |
-| Keepalive   |                               |                   | keep          |
+| WebSocket   | ``services/notifications.ts`` | **60 seconds**    | Sends version |
+| Keepalive   |                               |                   | request ping  |
+|             |                               |                   | to keep ES    |
 |             |                               |                   | WebSocket     |
-|             |                               |                   | connection    |
-|             |                               |                   | alive for     |
-|             |                               |                   | push          |
-|             |                               |                   | notifications |
+|             |                               |                   | alive. On     |
+|             |                               |                   | disconnect,   |
+|             |                               |                   | reconnects    |
+|             |                               |                   | with exp.     |
+|             |                               |                   | backoff       |
 +-------------+-------------------------------+-------------------+---------------+
 
 **Token Refresh Implementation:**
@@ -1526,9 +1528,48 @@ are fed into the notification store, which triggers toast display via
 ``NotificationHandler``.
 
 **Usage:** The poller is started automatically by ``NotificationHandler``
-when ``notificationMode === ‘direct’`` on Tauri desktop. It uses
-``getBandwidthSettings().eventPollerInterval`` for the polling interval
-(30s normal, 60s low bandwidth).
+when ``notificationMode === ‘direct’`` on desktop/web (``Platform.isDesktopOrWeb``).
+On mobile (iOS/Android), FCM push notifications handle event delivery instead.
+The polling interval is configurable per-profile via ``pollingInterval`` in
+notification settings (default 30 seconds). The poller uses recursive
+``setTimeout`` so interval changes take effect on the next tick.
+
+**Filters:** When ``onlyDetectedEvents`` is enabled in notification settings,
+the poller adds a ``Notes REGEXP:detected:`` filter to the events API request,
+limiting results to events with object detection data.
+
+WebSocket Notification Service
+------------------------------
+
+The WebSocket service (``src/services/notifications.ts``) connects to
+ZoneMinder’s Event Server (``zmeventnotification.pl``) for real-time alarm
+notifications in ES mode.
+
+**Reconnection strategy:**
+
+- Exponential backoff with jitter: 2s, 4s, 8s, 16s, ... capped at 2 minutes
+- Jitter of ±25% prevents thundering herd when multiple clients reconnect
+- Reconnection continues indefinitely until the user explicitly disconnects
+- An ``intentionalDisconnect`` flag distinguishes user-initiated disconnect from
+  network failures — only the former stops reconnection
+- ``reconnectAttempts`` counter resets after successful authentication (not on
+  socket open), preventing auth failures from resetting the backoff
+
+**Liveness detection:**
+
+- **Keepalive ping**: Sends a version-request every 60 seconds
+- **``checkAlive(timeoutMs)``**: Sends a version request and resolves
+  ``true``/``false`` based on whether a response arrives within the timeout.
+  Used by ``NotificationHandler`` on app resume (mobile) and tab visibility
+  change (desktop) to detect dead connections
+- **Network change listener**: ``NotificationHandler`` listens to
+  ``window.addEventListener(‘online’)`` (desktop/web) and
+  ``@capacitor/network`` (mobile) to trigger immediate reconnect via
+  ``reconnectNow()`` when connectivity is restored
+- **App resume check** (mobile): On ``appStateChange`` active, a liveness
+  probe is sent; if unresponsive, reconnect is triggered
+- **Visibility change** (desktop): On ``visibilitychange`` to visible, a
+  liveness probe is sent to detect connections killed during tab backgrounding
 
 Let’s trace a complete data flow: viewing monitors
 
