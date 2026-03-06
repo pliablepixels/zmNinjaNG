@@ -246,6 +246,18 @@ export default function NotificationSettings() {
   };
 
   const getConnectionBadge = () => {
+    const mode = settings?.notificationMode || 'es';
+
+    // Direct mode doesn't use a WebSocket — show mode-specific status
+    if (mode === 'direct' && settings?.enabled) {
+      return (
+        <Badge variant="default" className="gap-1.5 bg-blue-500">
+          <CheckCircle className="h-3 w-3" />
+          {t('notification_settings.direct_options.direct_active')}
+        </Badge>
+      );
+    }
+
     switch (connectionState) {
       case 'connected':
         return (

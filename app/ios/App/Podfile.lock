@@ -18,6 +18,8 @@ PODS:
     - FirebaseMessaging (~> 11.7.0)
   - CapacitorHaptics (7.0.3):
     - Capacitor
+  - CapacitorNetwork (7.0.4):
+    - Capacitor
   - CapacitorPreferences (7.0.3):
     - Capacitor
   - CapacitorShare (7.0.3):
@@ -92,6 +94,7 @@ DEPENDENCIES:
   - "CapacitorFilesystem (from `../../node_modules/@capacitor/filesystem`)"
   - "CapacitorFirebaseMessaging (from `../../node_modules/@capacitor-firebase/messaging`)"
   - "CapacitorHaptics (from `../../node_modules/@capacitor/haptics`)"
+  - "CapacitorNetwork (from `../../node_modules/@capacitor/network`)"
   - "CapacitorPreferences (from `../../node_modules/@capacitor/preferences`)"
   - "CapacitorShare (from `../../node_modules/@capacitor/share`)"
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
@@ -127,6 +130,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor-firebase/messaging"
   CapacitorHaptics:
     :path: "../../node_modules/@capacitor/haptics"
+  CapacitorNetwork:
+    :path: "../../node_modules/@capacitor/network"
   CapacitorPreferences:
     :path: "../../node_modules/@capacitor/preferences"
   CapacitorShare:
@@ -143,6 +148,7 @@ SPEC CHECKSUMS:
   CapacitorFilesystem: 609d5cceca1ed93d7f25839dbfdfd224bfe78209
   CapacitorFirebaseMessaging: 1ac12c0dab16d1e4edcf9cb878620507ac868a4e
   CapacitorHaptics: ce15be8f287fa2c61c7d2d9e958885b90cf0bebc
+  CapacitorNetwork: b719d692a8d1310da8d26d6648d3aa1ef1e100e1
   CapacitorPreferences: 913eef88272c13eb6445b21e51fe8ef6635412cc
   CapacitorShare: a4f4f86eabd4b3ff52ba6a11b754713c6926a8d1
   CapacitorSplashScreen: 000f7591d546907dda5cbb514bd6b6d9e6048cf8
@@ -158,6 +164,6 @@ SPEC CHECKSUMS:
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   SDWebImage: d0184764be51240d49c761c37f53dd017e1ccaaf
 
-PODFILE CHECKSUM: f2e6af56a07731fe5166ca620472ac669fa2462e
+PODFILE CHECKSUM: b3570415cdc240cc63cb41c22420c25a02d3748a
 
 COCOAPODS: 1.16.2
