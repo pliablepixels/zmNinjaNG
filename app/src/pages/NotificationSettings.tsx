@@ -253,7 +253,7 @@ export default function NotificationSettings() {
       return (
         <Badge variant="default" className="gap-1.5 bg-blue-500">
           <CheckCircle className="h-3 w-3" />
-          {t('notification_settings.status.direct_active')}
+          {t('notifications.status.direct_active')}
         </Badge>
       );
     }
