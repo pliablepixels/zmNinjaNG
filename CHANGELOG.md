@@ -1,5 +1,17 @@
 # Changelog
 
+## [zmNg-1.0.1](https://github.com/pliablepixels/zmNg/tree/zmNg-1.0.1) (2026-03-07)
+
+[Full Changelog](https://github.com/pliablepixels/zmNg/compare/zmNg-1.0.0...zmNg-1.0.1)
+
+**Fixed bugs:**
+
+- fix: extra space at top after iOS rotation back to portrait [\#36](https://github.com/pliablepixels/zmNg/issues/36)
+- fix: new dashboard widgets should default to full width [\#35](https://github.com/pliablepixels/zmNg/issues/35)
+- fix: new dashboard widgets render tiny until refresh [\#34](https://github.com/pliablepixels/zmNg/issues/34)
+- fix: exclude deleted monitors from all views [\#33](https://github.com/pliablepixels/zmNg/issues/33)
+- fix: app badge count drifts higher than in-app notification count [\#32](https://github.com/pliablepixels/zmNg/issues/32)
+
 ## [zmNg-1.0.0](https://github.com/pliablepixels/zmNg/tree/zmNg-1.0.0) (2026-03-06)
 
 [Full Changelog](https://github.com/pliablepixels/zmNg/compare/zmNg-0.2.6...zmNg-1.0.0)
