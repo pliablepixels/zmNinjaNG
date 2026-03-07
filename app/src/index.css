@@ -92,14 +92,16 @@
     font-family: system-ui, -apple-system, sans-serif;
     overflow: hidden; /* App uses flex layout with internal scroll containers */
     width: 100%;
+    height: 100%;
     overscroll-behavior: none; /* Prevent iOS rubber-band bounce that shifts fixed elements */
     -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
   }
 
-  html {
+  html, #root {
     overflow: hidden;
     overscroll-behavior: none;
     background-color: hsl(var(--background));
+    height: 100%;
   }
 }
 
