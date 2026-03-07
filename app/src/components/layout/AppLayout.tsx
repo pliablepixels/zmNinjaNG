@@ -371,7 +371,7 @@ export default function AppLayout() {
   const isCollapsed = sidebarWidth <= MIN_WIDTH + 20;
 
   return (
-    <div className="flex h-[100dvh] bg-background overflow-hidden pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
+    <div className="flex fixed inset-0 bg-background overflow-hidden pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
       {/* Desktop Sidebar - Draggable */}
       <aside
         className="hidden md:flex flex-col border-r bg-card/50 backdrop-blur-xl z-20 transition-all duration-300 relative group"
