@@ -178,7 +178,7 @@ export function DashboardLayout() {
                                 )}
                                 {widget.type === 'events' && (
                                     <EventsWidget
-                                        monitorId={widget.settings.monitorId}
+                                        monitorIds={widget.settings.monitorIds ?? (widget.settings.monitorId ? [widget.settings.monitorId] : undefined)}
                                         limit={widget.settings.eventCount}
                                         refreshInterval={widget.settings.refreshInterval}
                                     />

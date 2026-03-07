@@ -20,22 +20,23 @@ import { getEventCauseIcon } from '../../../lib/event-icons';
 import { useBandwidthSettings } from '../../../hooks/useBandwidthSettings';
 
 interface EventsWidgetProps {
-    /** Optional monitor ID to filter events */
-    monitorId?: string;
+    /** Optional monitor IDs to filter events */
+    monitorIds?: string[];
     /** Maximum number of events to display (default: 5) */
     limit?: number;
     /** Override auto-refresh interval in milliseconds (default: uses bandwidth settings) */
     refreshInterval?: number;
 }
 
-export const EventsWidget = memo(function EventsWidget({ monitorId, limit = 5, refreshInterval }: EventsWidgetProps) {
+export const EventsWidget = memo(function EventsWidget({ monitorIds, limit = 5, refreshInterval }: EventsWidgetProps) {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const bandwidth = useBandwidthSettings();
+    const monitorIdFilter = monitorIds?.length ? monitorIds.join(',') : undefined;
     const { data: events, isLoading } = useQuery({
-        queryKey: ['events', monitorId, limit],
+        queryKey: ['events', monitorIdFilter, limit],
         queryFn: () => getEvents({
-            monitorId: monitorId ? monitorId : undefined,
+            monitorId: monitorIdFilter,
             limit,
             sort: 'StartTime',
             direction: 'desc'

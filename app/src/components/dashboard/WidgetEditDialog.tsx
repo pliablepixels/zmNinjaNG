@@ -71,17 +71,11 @@ export function WidgetEditDialog({ open, onOpenChange, widget, profileId }: Widg
      * Toggle monitor selection
      */
     const toggleMonitor = (monitorId: string) => {
-        if (widget.type === 'events') {
-            // Events widget only supports single monitor
-            setSelectedMonitors([monitorId]);
-        } else {
-            // Monitor widget supports multiple monitors
-            setSelectedMonitors((prev) =>
-                prev.includes(monitorId)
-                    ? prev.filter((id) => id !== monitorId)
-                    : [...prev, monitorId]
-            );
-        }
+        setSelectedMonitors((prev) =>
+            prev.includes(monitorId)
+                ? prev.filter((id) => id !== monitorId)
+                : [...prev, monitorId]
+        );
     };
 
     /**
@@ -94,7 +88,7 @@ export function WidgetEditDialog({ open, onOpenChange, widget, profileId }: Widg
             updatedSettings.monitorIds = selectedMonitors;
             updatedSettings.feedFit = feedFit;
         } else if (widget.type === 'events') {
-            updatedSettings.monitorId = selectedMonitors[0] || undefined;
+            updatedSettings.monitorIds = selectedMonitors;
         }
 
         updateWidget(profileId, widget.id, {
@@ -132,27 +126,27 @@ export function WidgetEditDialog({ open, onOpenChange, widget, profileId }: Widg
                     {(widget.type === 'monitor' || widget.type === 'events') && (
                         <div className="space-y-2">
                             <Label>
-                                {widget.type === 'monitor'
-                                    ? t('dashboard.select_monitors')
-                                    : t('dashboard.select_monitor')}
+                                {t('dashboard.select_monitors')}
                             </Label>
-                            <ScrollArea className="h-48 border rounded-md p-4" data-testid="widget-edit-monitor-list">
-                                {enabledMonitors.map((monitor) => (
-                                    <div key={monitor.Monitor.Id} className="flex items-center space-x-2 mb-2">
-                                        <Checkbox
-                                            id={`monitor-${monitor.Monitor.Id}`}
-                                            checked={selectedMonitors.includes(monitor.Monitor.Id)}
-                                            onCheckedChange={() => toggleMonitor(monitor.Monitor.Id)}
-                                            data-testid={`widget-edit-monitor-checkbox-${monitor.Monitor.Id}`}
-                                        />
-                                        <label
-                                            htmlFor={`monitor-${monitor.Monitor.Id}`}
-                                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-                                        >
-                                            {monitor.Monitor.Name}
-                                        </label>
-                                    </div>
-                                ))}
+                            <ScrollArea className="h-48 border rounded-md" data-testid="widget-edit-monitor-list">
+                                <div className="p-4">
+                                    {enabledMonitors.map((monitor) => (
+                                        <div key={monitor.Monitor.Id} className="flex items-center space-x-2 mb-2">
+                                            <Checkbox
+                                                id={`monitor-${monitor.Monitor.Id}`}
+                                                checked={selectedMonitors.includes(monitor.Monitor.Id)}
+                                                onCheckedChange={() => toggleMonitor(monitor.Monitor.Id)}
+                                                data-testid={`widget-edit-monitor-checkbox-${monitor.Monitor.Id}`}
+                                            />
+                                            <label
+                                                htmlFor={`monitor-${monitor.Monitor.Id}`}
+                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                            >
+                                                {monitor.Monitor.Name}
+                                            </label>
+                                        </div>
+                                    ))}
+                                </div>
                             </ScrollArea>
                             {widget.type === 'monitor' && selectedMonitors.length === 0 && (
                                 <p className="text-xs text-muted-foreground text-red-500">
