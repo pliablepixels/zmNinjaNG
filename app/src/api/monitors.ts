@@ -30,10 +30,17 @@ export async function getMonitors(): Promise<MonitorsResponse> {
   const response = await client.get<MonitorsResponse>('/monitors.json');
 
   // Validate response with Zod
-  return validateApiResponse(MonitorsResponseSchema, response.data, {
+  const validated = validateApiResponse(MonitorsResponseSchema, response.data, {
     endpoint: '/monitors.json',
     method: 'GET',
   });
+
+  // Exclude deleted monitors at the API boundary so they never enter the app
+  validated.monitors = validated.monitors.filter(
+    ({ Monitor }) => Monitor.Deleted !== true
+  );
+
+  return validated;
 }
 
 /**
