@@ -4,7 +4,7 @@ Feature: Monitor Management and Viewing
   So that I can see live feeds and control cameras
 
   Background:
-    Given I am logged into zmNg
+    Given I am logged into zmNinjaNG
 
   Scenario: View monitors list
     When I navigate to the "Monitors" page

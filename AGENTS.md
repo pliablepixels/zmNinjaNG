@@ -396,7 +396,7 @@ From `useBandwidthSettings()`:
 
 If adding a new polling/refresh feature:
 
-1. **Add to BandwidthSettings type** in `lib/zmng-constants.ts`:
+1. **Add to BandwidthSettings type** in `lib/zmninja-ng-constants.ts`:
    ```typescript
    export interface BandwidthSettings {
      // ... existing properties
@@ -548,7 +548,7 @@ For complex features with multiple approaches, UX changes, or architectural deci
 → Use CapacitorHttp base64 directly, never convert to Blob
 
 **Adding Polling/Auto-Refresh Feature?**
-→ Use `useBandwidthSettings()` and appropriate interval property (e.g., `monitorStatusInterval`, `consoleEventsInterval`). If no matching property exists, add to `lib/zmng-constants.ts` with values for both normal and low modes.
+→ Use `useBandwidthSettings()` and appropriate interval property (e.g., `monitorStatusInterval`, `consoleEventsInterval`). If no matching property exists, add to `lib/zmninja-ng-constants.ts` with values for both normal and low modes.
 
 ---
 

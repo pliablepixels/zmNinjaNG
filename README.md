@@ -1,12 +1,12 @@
-# zmNg - Modern ZoneMinder Client
+# zmNinjaNG - Modern ZoneMinder Client
 
-[![Build Android](https://github.com/pliablepixels/zmNg/actions/workflows/build-android.yml/badge.svg)](https://github.com/pliablepixels/zmNg/actions/workflows/build-android.yml)
-[![Build macOS](https://github.com/pliablepixels/zmNg/actions/workflows/build-macos.yml/badge.svg)](https://github.com/pliablepixels/zmNg/actions/workflows/build-macos.yml)
-[![Build Windows](https://github.com/pliablepixels/zmNg/actions/workflows/build-windows.yml/badge.svg)](https://github.com/pliablepixels/zmNg/actions/workflows/build-windows.yml)
-[![Build Linux](https://github.com/pliablepixels/zmNg/actions/workflows/build-linux-amd64.yml/badge.svg)](https://github.com/pliablepixels/zmNg/actions/workflows/build-linux-amd64.yml)
-[![Tests](https://github.com/pliablepixels/zmNg/actions/workflows/test.yml/badge.svg)](https://github.com/pliablepixels/zmNg/actions/workflows/test.yml)
-[![GitHub release](https://img.shields.io/github/v/release/pliablepixels/zmNg)](https://github.com/pliablepixels/zmNg/releases)
-[![GitHub downloads](https://img.shields.io/github/downloads/pliablepixels/zmNg/total?cache=none)](https://github.com/pliablepixels/zmNg/releases)
+[![Build Android](https://github.com/pliablepixels/zmNinjaNG/actions/workflows/build-android.yml/badge.svg)](https://github.com/pliablepixels/zmNinjaNG/actions/workflows/build-android.yml)
+[![Build macOS](https://github.com/pliablepixels/zmNinjaNG/actions/workflows/build-macos.yml/badge.svg)](https://github.com/pliablepixels/zmNinjaNG/actions/workflows/build-macos.yml)
+[![Build Windows](https://github.com/pliablepixels/zmNinjaNG/actions/workflows/build-windows.yml/badge.svg)](https://github.com/pliablepixels/zmNinjaNG/actions/workflows/build-windows.yml)
+[![Build Linux](https://github.com/pliablepixels/zmNinjaNG/actions/workflows/build-linux-amd64.yml/badge.svg)](https://github.com/pliablepixels/zmNinjaNG/actions/workflows/build-linux-amd64.yml)
+[![Tests](https://github.com/pliablepixels/zmNinjaNG/actions/workflows/test.yml/badge.svg)](https://github.com/pliablepixels/zmNinjaNG/actions/workflows/test.yml)
+[![GitHub release](https://img.shields.io/github/v/release/pliablepixels/zmNinjaNG)](https://github.com/pliablepixels/zmNinjaNG/releases)
+[![GitHub downloads](https://img.shields.io/github/downloads/pliablepixels/zmNinjaNG/total?cache=none)](https://github.com/pliablepixels/zmNinjaNG/releases)
 
 <img src="app/assets/logo.png" align="right" width="120" />
 
@@ -36,10 +36,10 @@ Watch a video of the demo [HERE](https://youtu.be/ces_2ap-htc)
 
 ### Agentic AI, you and me
 
-Agentic AI and me: I built the very first version of zmNinja over several months and built in more features over multiple years. I built the first version of zmNg over 2.5 days with almost as many features as the last version of zmNinja. Thanks to Claude.
+Agentic AI and me: I built the very first version of zmNinja over several months and built in more features over multiple years. I built the first version of zmNinjaNG over 2.5 days with almost as many features as the last version of zmNinja. Thanks to Claude.
 
-Agentic AI and you: I don't plan to support zmNg at all. Please don't ping me and expect quick answers. 
-Instead, treat this as "personal software" - i.e. download the code and fix it yourself. If you don't code, or do code, but aren't familiar with the environment of zmNg, I'd encourage you to use an agentic AI tool to help you along the way. Pick one you prefer. Remember, for mobile support, you'll need to generate your own FCM tokens. See mobile guides later for more.
+Agentic AI and you: I don't plan to support zmNinjaNG at all. Please don't ping me and expect quick answers. 
+Instead, treat this as "personal software" - i.e. download the code and fix it yourself. If you don't code, or do code, but aren't familiar with the environment of zmNinjaNG, I'd encourage you to use an agentic AI tool to help you along the way. Pick one you prefer. Remember, for mobile support, you'll need to generate your own FCM tokens. See mobile guides later for more.
 
 
 #### Pull Requests
@@ -58,9 +58,9 @@ I am happy to accept PRs, but I don't want [AI slop](https://en.wikipedia.org/wi
 ## Quick Start
 
 ### Binaries
-- Download binaries from [zmNg Releases](https://github.com/pliablepixels/zmNg/releases)
+- Download binaries from [zmNinjaNG Releases](https://github.com/pliablepixels/zmNinjaNG/releases)
 - iOS will be in the app store soon. Isaac is on it.
-- I use Github workflows and runners to automatically build release binaries [here](https://github.com/pliablepixels/zmNg/tree/main/.github/workflows). Binaries are built for specific platforms. If the binary doesn't work for your linux distro, look at those files
+- I use Github workflows and runners to automatically build release binaries [here](https://github.com/pliablepixels/zmNinjaNG/tree/main/.github/workflows). Binaries are built for specific platforms. If the binary doesn't work for your linux distro, look at those files
 
 ## Build from Source
 
@@ -84,8 +84,8 @@ This allows the workflows to create GitHub releases automatically when you push 
 ### Desktop Development
 
 ```bash
-git clone https://github.com/pliablepixels/zmNg
-cd zmNg/app
+git clone https://github.com/pliablepixels/zmNinjaNG
+cd zmNinjaNG/app
 npm install
 
 # Desktop development (Tauri - native app)
@@ -119,7 +119,7 @@ The project includes unit tests and end-to-end (E2E) tests to ensure code qualit
 Run unit tests with Vitest:
 
 ```bash
-cd zmNg/app
+cd zmNinjaNG/app
 
 # Run all unit tests
 npm run test:unit

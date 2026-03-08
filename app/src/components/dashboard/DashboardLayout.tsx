@@ -13,7 +13,7 @@
 import { useDashboardStore } from '../../stores/dashboard';
 import { useProfileStore } from '../../stores/profile';
 import { useShallow } from 'zustand/react/shallow';
-import { GRID_LAYOUT } from '../../lib/zmng-constants';
+import { GRID_LAYOUT } from '../../lib/zmninja-ng-constants';
 import { DashboardWidget } from './DashboardWidget';
 import { MonitorWidget } from './widgets/MonitorWidget';
 import { EventsWidget } from './widgets/EventsWidget';

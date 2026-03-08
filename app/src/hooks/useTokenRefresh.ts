@@ -16,7 +16,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useAuthStore } from '../stores/auth';
-import { ZM_INTEGRATION } from '../lib/zmng-constants';
+import { ZM_INTEGRATION } from '../lib/zmninja-ng-constants';
 import { log, LogLevel } from '../lib/logger';
 
 /**

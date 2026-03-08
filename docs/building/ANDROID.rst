@@ -1,7 +1,7 @@
 Android Build Guide
 ===================
 
-This guide walks you through setting up and building the zmNg Android
+This guide walks you through setting up and building the zmNinjaNG Android
 app from scratch.
 
 Prerequisites
@@ -71,8 +71,8 @@ Project Setup
 
 .. code:: bash
 
-   git clone https://github.com/pliablepixels/zmNg
-   cd zmNg/app
+   git clone https://github.com/pliablepixels/zmNinjaNG
+   cd zmNinjaNG/app
 
 2. Install Dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -93,14 +93,14 @@ Messaging (FCM):
 1. Go to `Firebase Console <https://console.firebase.google.com/>`__
 2. Click **Add project**
 3. Follow the setup wizard to create your project (call it anything, I
-   called mine zmNg)
+   called mine zmNinjaNG)
 
 2. Add Android App to Firebase
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 1. In Firebase Console, click **Add app** and select **Android**
-2. Enter the package name: ``com.pliablepixels.zmng``
-3. (Optional) Enter an app nickname: “zmNg Android”
+2. Enter the package name: ``com.zoneminder.zmNinjaNG``
+3. (Optional) Enter an app nickname: “zmNinjaNG Android”
 4. Click **Register app**
 
 3. Download Configuration File
@@ -112,7 +112,7 @@ Messaging (FCM):
 
    ::
 
-      zmNg/app/android/app/google-services.json
+      zmNinjaNG/app/android/app/google-services.json
 
 4. Verify Firebase Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -127,7 +127,7 @@ notifications.
 5. Configure ZoneMinder Event Notification Server
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-zmNg works out of the box with zmES web socket notifications. If you
+zmNinjaNG works out of the box with zmES web socket notifications. If you
 want push notification support, the ZoneMinder event notification server
 (``zmeventnotification.pl``) needs to be configured to work with your
 Firebase project. You will need to use a modified version that I
@@ -244,7 +244,7 @@ Push Notifications Don’t Work
 - Ensure you’re using an emulator/device with **Google Play Services**
 - Verify ``google-services.json`` is in the correct location
 - Check that the package name in Firebase matches
-  ``com.pliablepixels.zmng``
+  ``com.zoneminder.zmNinjaNG``
 - If using your own Firebase project, ensure the ZoneMinder server is
   configured with your FCM credentials
 - Check for “sender ID mismatch” errors in logcat - this means your

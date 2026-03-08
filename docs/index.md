@@ -1,20 +1,20 @@
-# zmNg Documentation
+# zmNinjaNG Documentation
 
 ```{image} _static/img/logo.png
-:alt: zmNg Logo
+:alt: zmNinjaNG Logo
 :width: 150px
 :align: center
 ```
 
-**zmNg** is a modern, cross-platform client for [ZoneMinder](https://zoneminder.com/), the open-source video surveillance system. It is a ground-up rewrite of [zmNinja](https://zmninja.zoneminder.com/) using React, TypeScript, and Capacitor.
+**zmNinjaNG** is a modern, cross-platform client for [ZoneMinder](https://zoneminder.com/), the open-source video surveillance system. It is a ground-up rewrite of [zmNinja](https://zmninja.zoneminder.com/) using React, TypeScript, and Capacitor.
 
-zmNg runs on **Android**, **iOS**, **Windows**, **macOS**, **Linux**, and the **web** from a single codebase.
+zmNinjaNG runs on **Android**, **iOS**, **Windows**, **macOS**, **Linux**, and the **web** from a single codebase.
 
 ---
 
 ## User Guide
 
-Everything you need to install, configure, and use zmNg day-to-day.
+Everything you need to install, configure, and use zmNinjaNG day-to-day.
 
 ```{toctree}
 :maxdepth: 2
@@ -25,7 +25,7 @@ user-guide/index
 
 ## Developer Guide
 
-A 12-chapter guide covering React fundamentals, the zmNg architecture, testing, and how to contribute. Written for experienced programmers who may be new to React.
+A 12-chapter guide covering React fundamentals, the zmNinjaNG architecture, testing, and how to contribute. Written for experienced programmers who may be new to React.
 
 ```{toctree}
 :maxdepth: 2
@@ -47,8 +47,8 @@ building/index
 
 ## Links
 
-- [GitHub Repository](https://github.com/pliablepixels/zmNg)
-- [Releases & Downloads](https://github.com/pliablepixels/zmNg/releases)
-- [Issue Tracker](https://github.com/pliablepixels/zmNg/issues)
+- [GitHub Repository](https://github.com/pliablepixels/zmNinjaNG)
+- [Releases & Downloads](https://github.com/pliablepixels/zmNinjaNG/releases)
+- [Issue Tracker](https://github.com/pliablepixels/zmNinjaNG/issues)
 - [ZoneMinder](https://zoneminder.com/)
 - [Demo Video](https://youtu.be/ces_2ap-htc)

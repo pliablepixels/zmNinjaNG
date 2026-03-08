@@ -33,10 +33,10 @@ if [[ "$VERSION" == "NONE" ]]; then
     exit 1
 fi
 
-TAG="zmNg-$VERSION"
+TAG="zmNinjaNG-$VERSION"
 
 echo "==================================================="
-echo "   ZoneMinder Next Gen (zmNg) Release Script"
+echo "   ZoneMinder Next Gen (zmNinjaNG) Release Script"
 echo "==================================================="
 echo "Detected Version: $VERSION"
 echo "Target Tag:       $TAG"
@@ -72,7 +72,7 @@ if [ "$TAG_EXISTS" = true ]; then
             echo "Bumping version: $VERSION -> $BUMPED"
             set_version "$BUMPED"
             VERSION="$BUMPED"
-            TAG="zmNg-$VERSION"
+            TAG="zmNinjaNG-$VERSION"
             git add "$PKG_JSON" app/src-tauri/tauri.conf.json app/src-tauri/Cargo.toml app/src-tauri/Cargo.lock app/ios/App/App.xcodeproj/project.pbxproj app/android/app/build.gradle
             git commit -m "chore: bump version to $VERSION"
             git push origin "$CURRENT_BRANCH"
@@ -190,7 +190,7 @@ git push origin "$TAG" --force
 
 echo ""
 echo "✅ Release triggered! Check GitHub Actions for progress."
-echo "   https://github.com/pliablepixels/zmNg/actions"
+echo "   https://github.com/pliablepixels/zmNinjaNG/actions"
 echo ""
 echo "The create-release workflow will:"
 echo "  - Generate release notes with changelog"

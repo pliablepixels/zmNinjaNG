@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { log, LogLevel } from '../lib/logger';
 import type { MonitorFeedFit } from './settings';
-import { GRID_LAYOUT } from '../lib/zmng-constants';
+import { GRID_LAYOUT } from '../lib/zmninja-ng-constants';
 
 export type WidgetType = 'monitor' | 'events' | 'timeline' | 'heatmap';
 

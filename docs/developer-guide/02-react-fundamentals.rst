@@ -3,7 +3,7 @@ React Fundamentals
 
 This chapter explains React from first principles for programmers
 unfamiliar with React’s mental model. We’ll use real examples from the
-zmNg codebase.
+zmNinjaNG codebase.
 
 Table of Contents
 -----------------
@@ -86,10 +86,10 @@ Simple Example
    <Welcome name="Alice" />  // Renders: "Hello, Alice!"
    <Welcome name="Bob" />    // Renders: "Hello, Bob!"
 
-Real zmNg Example: MonitorCard
+Real zmNinjaNG Example: MonitorCard
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Let’s look at a real component from zmNg (simplified):
+Let’s look at a real component from zmNinjaNG (simplified):
 
 .. code:: tsx
 
@@ -278,7 +278,7 @@ What Happens When You Click?
 Real Example: useMonitorStream Hook
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Let’s look at how zmNg uses state in the ``useMonitorStream`` hook:
+Let’s look at how zmNinjaNG uses state in the ``useMonitorStream`` hook:
 
 .. code:: tsx
 
@@ -412,7 +412,7 @@ snapshot in time**.
 This is called “closure over props/state” - each render has its own
 values.
 
-Example from zmNg: useMonitorStream Cleanup
+Example from zmNinjaNG: useMonitorStream Cleanup
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: tsx
@@ -1111,11 +1111,11 @@ of selectors and subscriptions.
 React Native Specifics
 ----------------------
 
-zmNg uses React Native (via Capacitor), so instead of HTML elements, you
+zmNinjaNG uses React Native (via Capacitor), so instead of HTML elements, you
 use React Native components:
 
 =================== ============================= ====================
-HTML                React Native                  zmNg Usage
+HTML                React Native                  zmNinjaNG Usage
 =================== ============================= ====================
 ``<div>``           ``<View>``                    Layout containers
 ``<span>``, ``<p>`` ``<Text>``                    Text display

@@ -1,13 +1,13 @@
 Testing Strategy
 ================
 
-This chapter covers zmNg’s testing approach in detail, including unit
+This chapter covers zmNinjaNG’s testing approach in detail, including unit
 tests, E2E tests, and best practices.
 
 Testing Philosophy
 ------------------
 
-zmNg uses a two-tier testing strategy:
+zmNinjaNG uses a two-tier testing strategy:
 
 1. **Unit Tests**: Fast, isolated tests for logic and components
 2. **E2E Tests**: Full user journey tests with a real ZoneMinder server

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { LOGGING } from '../lib/zmng-constants';
+import { LOGGING } from '../lib/zmninja-ng-constants';
 
 export interface LogEntry {
     id: string;

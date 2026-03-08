@@ -20,7 +20,7 @@ import { SecureImage } from '../ui/secure-image';
 import { downloadEventVideo } from '../../lib/download';
 import { getEventImageUrl } from '../../api/events';
 import { calculateThumbnailDimensions } from '../../lib/event-utils';
-import { ZM_INTEGRATION } from '../../lib/zmng-constants';
+import { ZM_INTEGRATION } from '../../lib/zmninja-ng-constants';
 import type { Monitor, Tag } from '../../api/types';
 import { Capacitor } from '@capacitor/core';
 import { TagChipList } from './TagChip';

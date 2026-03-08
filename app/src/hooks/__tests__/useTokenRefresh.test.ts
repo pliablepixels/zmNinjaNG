@@ -7,7 +7,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { ZM_INTEGRATION } from '../../lib/zmng-constants';
+import { ZM_INTEGRATION } from '../../lib/zmninja-ng-constants';
 
 // Mock the auth store before importing the hook
 const mockRefreshAccessToken = vi.fn();

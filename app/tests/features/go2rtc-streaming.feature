@@ -1,7 +1,7 @@
 Feature: Go2RTC WebRTC Streaming
 
   Background:
-    Given I am logged into zmNg
+    Given I am logged into zmNinjaNG
 
   Scenario: View monitor with VideoPlayer in Montage
     When I navigate to the "Montage" page

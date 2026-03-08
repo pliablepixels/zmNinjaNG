@@ -41,8 +41,8 @@
     "done": "Listo"
   },
   "app": {
-    "name": "zmNg",
-    "logo_alt": "Logo de zmNg",
+    "name": "zmNinjaNG",
+    "logo_alt": "Logo de zmNinjaNG",
     "navigation_menu": "Menú de navegación",
     "navigation_menu_desc": "Navegación principal de la aplicación."
   },
@@ -637,7 +637,7 @@
     "credentials_incomplete": "Ingrese nombre de usuario y contraseña, o deje ambos en blanco."
   },
   "setup": {
-    "welcome": "Bienvenido a zmNg",
+    "welcome": "Bienvenido a zmNinjaNG",
     "subtitle": "Configuración Inicial",
     "server_url": "URL del Servidor",
     "server_url_hint": "ej. https://demo.zoneminder.com",

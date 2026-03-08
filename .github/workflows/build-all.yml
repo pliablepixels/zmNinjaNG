@@ -58,19 +58,19 @@ jobs:
         run: |
           VERSION="${{ github.event.inputs.version }}"
           mkdir -p dist/android
-          cp app/android/app/build/outputs/apk/debug/*.apk dist/android/zmNg-android-debug-${VERSION}.apk
-          cp app/android/app/build/outputs/bundle/debug/*.aab dist/android/zmNg-android-debug-${VERSION}.aab
+          cp app/android/app/build/outputs/apk/debug/*.apk dist/android/zmNinjaNG-android-debug-${VERSION}.apk
+          cp app/android/app/build/outputs/bundle/debug/*.aab dist/android/zmNinjaNG-android-debug-${VERSION}.aab
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: zmNg-android-apk-${{ github.event.inputs.version }}
+          name: zmNinjaNG-android-apk-${{ github.event.inputs.version }}
           path: dist/android/*.apk
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: zmNg-android-aab-${{ github.event.inputs.version }}
+          name: zmNinjaNG-android-aab-${{ github.event.inputs.version }}
           path: dist/android/*.aab
 
   build-macos:
@@ -124,7 +124,7 @@ jobs:
       - name: Upload DMG artifact
         uses: actions/upload-artifact@v4
         with:
-          name: zmNg-macos-dmg-${{ github.event.inputs.version }}
+          name: zmNinjaNG-macos-dmg-${{ github.event.inputs.version }}
           path: app/src-tauri/target/release/bundle/dmg/*.dmg
 
   build-linux-amd64:
@@ -160,13 +160,13 @@ jobs:
       - name: Upload AppImage artifact
         uses: actions/upload-artifact@v4
         with:
-          name: zmNg-linux-amd64-appimage-${{ github.event.inputs.version }}
+          name: zmNinjaNG-linux-amd64-appimage-${{ github.event.inputs.version }}
           path: app/src-tauri/target/release/bundle/appimage/*.AppImage
 
       - name: Upload DEB package artifact
         uses: actions/upload-artifact@v4
         with:
-          name: zmNg-linux-amd64-deb-${{ github.event.inputs.version }}
+          name: zmNinjaNG-linux-amd64-deb-${{ github.event.inputs.version }}
           path: app/src-tauri/target/release/bundle/deb/*.deb
 
   build-windows:
@@ -197,12 +197,12 @@ jobs:
       - name: Upload MSI installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: zmNg-windows-msi-${{ github.event.inputs.version }}
+          name: zmNinjaNG-windows-msi-${{ github.event.inputs.version }}
           path: app/src-tauri/target/release/bundle/msi/*.msi
 
       - name: Upload NSIS installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: zmNg-windows-nsis-${{ github.event.inputs.version }}
+          name: zmNinjaNG-windows-nsis-${{ github.event.inputs.version }}
           path: app/src-tauri/target/release/bundle/nsis/*.exe
           if-no-files-found: ignore

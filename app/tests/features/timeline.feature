@@ -4,7 +4,7 @@ Feature: Timeline Visualization
   So that I can see patterns and browse events chronologically
 
   Background:
-    Given I am logged into zmNg
+    Given I am logged into zmNinjaNG
     When I navigate to the "Timeline" page
 
   Scenario: View timeline interface

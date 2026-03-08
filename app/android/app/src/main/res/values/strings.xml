@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">zmNg</string>
-    <string name="title_activity_main">zmNg</string>
+    <string name="app_name">zmNinjaNG</string>
+    <string name="title_activity_main">zmNinjaNG</string>
     <string name="package_name">com.zoneminder.zmNinjaNG</string>
     <string name="custom_url_scheme">com.zoneminder.zmNinjaNG</string>
 </resources>

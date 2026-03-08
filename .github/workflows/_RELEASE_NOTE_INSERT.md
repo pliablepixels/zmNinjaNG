@@ -12,9 +12,9 @@ See [README](README.md)
 - **Solution**: Click "More info" → "Run anyway"
 
 ### Linux
-- **AppImage**: Make executable with `chmod +x zmNg-*.AppImage`, then run
-- **DEB Package**: Install with `sudo dpkg -i zmNg-*.deb`
-- **RPM Package**: Install with `sudo rpm -i zmNg-*.rpm`
+- **AppImage**: Make executable with `chmod +x zmNinjaNG-*.AppImage`, then run
+- **DEB Package**: Install with `sudo dpkg -i zmNinjaNG-*.deb`
+- **RPM Package**: Install with `sudo rpm -i zmNinjaNG-*.rpm`
 
 ### Android
 - **Debug APK (signed)**: Enable "Install from Unknown Sources" in device settings
@@ -24,10 +24,10 @@ See [README](README.md)
 
 - **Self-signed certificates are not supported**. Use Let's Encrypt or other trusted certificates. Alternatively, use HTTP with WireGuard (this is what I use)
 - **Push notifications**: Now works for iOS and Android
-- **Event Server**: zmNg needs the new [EventServer 7+](https://zmeventnotificationv7.readthedocs.io/en/latest/). It may work with the old one. 
+- **Event Server**: zmNinjaNG needs the new [EventServer 7+](https://zmeventnotificationv7.readthedocs.io/en/latest/). It may work with the old one. 
 
 ## Support
 
-This is personal software with no official support. For issues or contributions, see the [GitHub repository](https://github.com/pliablepixels/zmNg).
+This is personal software with no official support. For issues or contributions, see the [GitHub repository](https://github.com/pliablepixels/zmNinjaNG).
 
 ---

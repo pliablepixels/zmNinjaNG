@@ -1,11 +1,11 @@
-# zmNg Documentation - Sphinx Configuration
+# zmNinjaNG Documentation - Sphinx Configuration
 
 import os
 import sys
 
 # -- Project information -----------------------------------------------------
 
-project = 'zmNg'
+project = 'zmNinjaNG'
 copyright = '2025-2026, pliablepixels'
 author = 'pliablepixels'
 release = '0.2.4'
@@ -67,7 +67,7 @@ html_js_files = ['js/collapse-nav.js']
 html_context = {
     'display_github': True,
     'github_user': 'pliablepixels',
-    'github_repo': 'zmNg',
+    'github_repo': 'zmNinjaNG',
     'github_version': 'main',
     'conf_py_path': '/docs/',
 }

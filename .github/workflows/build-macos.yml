@@ -9,7 +9,7 @@ on:
         type: string
   push:
     tags:
-      - 'zmNg-*'
+      - 'zmNinjaNG-*'
 
 permissions:
   contents: write
@@ -69,10 +69,10 @@ jobs:
       - name: Rename macOS artifacts
         run: |
           VERSION="${{ github.event.inputs.version || github.ref_name }}"
-          VERSION="${VERSION#zmNg-}"
+          VERSION="${VERSION#zmNinjaNG-}"
           mkdir -p dist/macos
 
-          # Tauri creates files like zmNg_0.0.2_aarch64.dmg or zmNg_0.0.2_x64.dmg
+          # Tauri creates files like zmNinjaNG_0.0.2_aarch64.dmg or zmNinjaNG_0.0.2_x64.dmg
           for dmg in app/src-tauri/target/release/bundle/dmg/*.dmg; do
             if [ -f "$dmg" ]; then
               filename=$(basename "$dmg")
@@ -84,20 +84,20 @@ jobs:
               else
                 arch="universal"
               fi
-              cp "$dmg" "dist/macos/zmNg-${VERSION}-macos-${arch}.dmg"
+              cp "$dmg" "dist/macos/zmNinjaNG-${VERSION}-macos-${arch}.dmg"
             fi
           done
 
       - name: Upload DMG artifact
         uses: actions/upload-artifact@v4
         with:
-          name: zmNg-macos-dmg-${{ github.event.inputs.version || github.ref_name }}
+          name: zmNinjaNG-macos-dmg-${{ github.event.inputs.version || github.ref_name }}
           path: dist/macos/*.dmg
           retention-days: 30
 
       - name: Upload to Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/zmNg-')
+        if: startsWith(github.ref, 'refs/tags/zmNinjaNG-')
         with:
             files: |
               dist/macos/*.dmg

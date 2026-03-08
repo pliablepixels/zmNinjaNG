@@ -1,7 +1,7 @@
 API and Data Fetching
 =====================
 
-This chapter covers how zmNg interacts with ZoneMinder’s API and manages
+This chapter covers how zmNinjaNG interacts with ZoneMinder’s API and manages
 server data.
 
 API Architecture
@@ -202,7 +202,7 @@ Connection keys are cached to avoid repeated API calls:
 
    ### Streaming Mechanics
 
-   Video streaming in zmNg is more complex than simple API calls due to browser limitations and ZoneMinder's architecture.
+   Video streaming in zmNinjaNG is more complex than simple API calls due to browser limitations and ZoneMinder's architecture.
 
    #### 1. Cache Busting (`_t`)
    Browsers aggressively cache image requests based on URL. When using `mode=single` (Snapshot mode) or when a stream connection breaks and needs re-establishing, the browser might show a stale image if the URL hasn't changed.
@@ -279,7 +279,7 @@ Key Settings Explained
 ^^^^^^^^^^^^^^^^^^^^^^
 
 +---------------------+-----------------------+---------------------------+
-| Setting             | zmNg Value            | What It Does              |
+| Setting             | zmNinjaNG Value            | What It Does              |
 +=====================+=======================+===========================+
 | ``staleTime``       | ``0`` (default)       | How long data is “fresh”. |
 |                     |                       | At 0, data is immediately |
@@ -318,7 +318,7 @@ When Network Requests Happen
 | simultaneously          |                                            |
 +-------------------------+--------------------------------------------+
 | Window regains focus    | **No** - ``refetchOnWindowFocus: false``   |
-|                         | in zmNg                                    |
+|                         | in zmNinjaNG                                    |
 +-------------------------+--------------------------------------------+
 
 Example: Monitor Polling
@@ -449,7 +449,7 @@ Keep data fresh with automatic refetching:
 Complete Timer and Polling Reference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-zmNg uses various timers and scheduled tasks across the application to
+zmNinjaNG uses various timers and scheduled tasks across the application to
 keep data fresh and maintain connections. Understanding these timers is
 crucial for debugging performance issues and optimizing resource usage.
 
@@ -657,7 +657,7 @@ Events Refetch **60 seconds** Refreshes heatmap event data
 Configuration Constants
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Static defaults are defined in ``lib/zmng-constants.ts``:
+Static defaults are defined in ``lib/zmninja-ng-constants.ts``:
 
 .. code:: tsx
 
@@ -681,7 +681,7 @@ Most polling intervals are controlled by the user’s **bandwidth mode**
 setting (Normal or Low). This allows users to reduce network usage on
 metered connections.
 
-**Configuration** (``lib/zmng-constants.ts``):
+**Configuration** (``lib/zmninja-ng-constants.ts``):
 
 .. code:: tsx
 

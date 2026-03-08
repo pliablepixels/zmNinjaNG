@@ -6,17 +6,17 @@
 
 ZoneMinder 1.36 or newer with API access enabled (`OPT_USE_API = 1`).
 
-### Does zmNg work with self-signed certificates?
+### Does zmNinjaNG work with self-signed certificates?
 
 No. Self-signed or untrusted certificates are not supported. Use [Let's Encrypt](https://letsencrypt.org/) (free) or another trusted certificate authority. You can also use plain HTTP if your server is on a local network.
 
-### Is zmNg free?
+### Is zmNinjaNG free?
 
-Yes. zmNg is open source and free to use. The source code is available on [GitHub](https://github.com/pliablepixels/zmNg).
+Yes. zmNinjaNG is open source and free to use. The source code is available on [GitHub](https://github.com/pliablepixels/zmNinjaNG).
 
-### How is zmNg different from zmNinja?
+### How is zmNinjaNG different from zmNinja?
 
-zmNg is a ground-up rewrite of zmNinja using modern web technologies (React, TypeScript, Capacitor). It has the same core features but with a modern UI, better performance, and encrypted credential storage. See {doc}`Getting Started <getting-started>` for the full comparison.
+zmNinjaNG is a ground-up rewrite of zmNinja using modern web technologies (React, TypeScript, Capacitor). It has the same core features but with a modern UI, better performance, and encrypted credential storage. See {doc}`Getting Started <getting-started>` for the full comparison.
 
 ## Connection Issues
 
@@ -48,7 +48,7 @@ Push notifications on mobile (iOS/Android) require:
 2. One of the following backends:
    - **ES mode**: The Event Notification Server with FCM support
    - **Direct mode**: ZoneMinder with the Notifications REST API (no Event Server needed)
-3. Enabling notifications in zmNg settings and selecting the appropriate mode
+3. Enabling notifications in zmNinjaNG settings and selecting the appropriate mode
 
 See {doc}`notifications` for the full setup guide.
 
@@ -56,7 +56,7 @@ See {doc}`notifications` for the full setup guide.
 
 Yes. Desktop apps show in-app toast notifications while the app is open:
 - **ES mode**: Events arrive in real time via WebSocket.
-- **Direct mode**: zmNg polls the ZM events API at a configurable interval.
+- **Direct mode**: zmNinjaNG polls the ZM events API at a configurable interval.
 
 Background/push notifications (via FCM) are only available on mobile (iOS/Android). Desktop apps (Tauri) do not support FCM.
 
@@ -85,13 +85,13 @@ For personal use, you can use a free Apple Developer account to side-load the ap
 
 ### The pre-built Linux binary doesn't work
 
-The pre-built binaries are built for specific distributions. Check the [GitHub Actions workflows](https://github.com/pliablepixels/zmNg/tree/main/.github/workflows) to see the build configuration and adjust for your system. You can also {doc}`build from source <installation>`.
+The pre-built binaries are built for specific distributions. Check the [GitHub Actions workflows](https://github.com/pliablepixels/zmNinjaNG/tree/main/.github/workflows) to see the build configuration and adjust for your system. You can also {doc}`build from source <installation>`.
 
 ## Data & Privacy
 
-### Does zmNg send data to third parties?
+### Does zmNinjaNG send data to third parties?
 
-No. zmNg does not include any analytics, tracking, or third-party data collection. All communication is between the app and your ZoneMinder server.
+No. zmNinjaNG does not include any analytics, tracking, or third-party data collection. All communication is between the app and your ZoneMinder server.
 
 ### Where are my credentials stored?
 

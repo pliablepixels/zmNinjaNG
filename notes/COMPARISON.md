@@ -1,18 +1,18 @@
-# zmNinja vs zmNg: Comprehensive Comparison
+# zmNinja vs zmNinjaNG: Comprehensive Comparison
 
-**TLDR**: A complete architectural modernization of a popular ZoneMinder mobile/desktop client. zmNg achieves feature parity with zmNinja while delivering 3-4x better performance, 65% less code, 92% fewer native dependencies, and a future-proof technology stack - all accomplished in a focused development sprint with AI assistance.
+**TLDR**: A complete architectural modernization of a popular ZoneMinder mobile/desktop client. zmNinjaNG achieves feature parity with zmNinja while delivering 3-4x better performance, 65% less code, 92% fewer native dependencies, and a future-proof technology stack - all accomplished in a focused development sprint with AI assistance.
 
 **Platforms Compared:** Android, Web, iOS, Desktop
 
 **Last Updated:** March 7, 2026
 **zmNinja version:** v1.8.000 (September 9, 2025)
-**zmNg version:** v1.0.2
+**zmNinjaNG version:** v1.0.2
 
 ---
 
 ## Executive Summary
 
-zmNg represents a complete ground-up rewrite of zmNinja using modern web technologies, achieving:
+zmNinjaNG represents a complete ground-up rewrite of zmNinja using modern web technologies, achieving:
 
 - **65% smaller codebase** (23K LOC vs 78K+ LOC estimated)
 - **3-4x faster load times** across all platforms
@@ -63,7 +63,7 @@ zmNg represents a complete ground-up rewrite of zmNinja using modern web technol
 8. cordova-plugin-advanced-websocket (v1.1.5)
 9. cordova-plugin-ionic-keyboard (v2.2.0)
 
-### zmNg (Modern - v1.0.2)
+### zmNinjaNG (Modern - v1.0.2)
 
 | Component | Technology | Version | Status |
 |-----------|-----------|---------|--------|
@@ -114,7 +114,7 @@ npm run tauri:build      # Build desktop app
 
 ### Lines of Code Analysis
 
-| Metric | zmNinja | zmNg | Reduction |
+| Metric | zmNinja | zmNinjaNG | Reduction |
 |--------|---------|------|--------------|
 | **Primary Language** | JavaScript (78.8%) | TypeScript (100%) | Type-safe |
 | **Total Source Code** | ~78,000 LOC (estimated)* | 23,003 LOC | **71% less** |
@@ -148,7 +148,7 @@ resources/                 # App resources
 build/                     # Build configurations
 ```
 
-**zmNg Structure:**
+**zmNinjaNG Structure:**
 ```
 app/src/
 ├── api/                   # 8 files - Type-safe API layer
@@ -255,7 +255,7 @@ app/src/
 - ❌ Heavy Cordova overhead
 - ❌ Gulp-based slow builds
 
-### zmNg Architecture (Component-Based)
+### zmNinjaNG Architecture (Component-Based)
 
 ```
 ┌──────────────────────────────────────┐
@@ -327,7 +327,7 @@ app/src/
 - Google Play releases
 - GitHub release binaries for desktop
 
-### zmNg Platform Support
+### zmNinjaNG Platform Support
 
 **Current:**
 - ✅ Android (Capacitor)
@@ -379,7 +379,7 @@ cordova build android --release
 - ❌ Cordova ecosystem aging
 - ❌ Firebase overhead
 
-### zmNg Android
+### zmNinjaNG Android
 
 **Technology:**
 - Capacitor Android 7.4.4
@@ -441,7 +441,7 @@ npm run android:release    # Build APK (auto-signed via Gradle)
 - ⚠️ Large attack surface (26+ plugins)
 - ⚠️ Firebase analytics tracking
 
-### zmNg Security
+### zmNinjaNG Security
 
 **Credential Storage (Web):**
 - AES-GCM 256-bit encryption
@@ -469,7 +469,7 @@ npm run android:release    # Build APK (auto-signed via Gradle)
 
 **Security Comparison Table:**
 
-| Security Feature | zmNinja | zmNg |
+| Security Feature | zmNinja | zmNinjaNG |
 |------------------|---------|------|
 | **Password Encryption (Web)** | ❌ None | ✅ AES-GCM 256-bit |
 | **Password Encryption (Android)** | ⚠️ SQLite (not encrypted) | ✅ Android Keystore (hardware) |
@@ -482,7 +482,7 @@ npm run android:release    # Build APK (auto-signed via Gradle)
 
 ### Web-Specific Features
 
-| Feature | zmNinja | zmNg |
+| Feature | zmNinja | zmNinjaNG |
 |---------|---------|------|
 | **PWA Support** | ❌ | ✅ Ready |
 | **Service Workers** | ❌ | ✅ Available |
@@ -495,7 +495,7 @@ npm run android:release    # Build APK (auto-signed via Gradle)
 
 ### Web Performance
 
-| Metric | zmNinja | zmNg | Improvement |
+| Metric | zmNinja | zmNinjaNG | Improvement |
 |--------|---------|------|-------------|
 | **Initial Load** | 3-5s | 0.8-1.5s | **3-4x faster** |
 | **Time to Interactive** | 4-6s | 1-2s | **3x faster** |
@@ -506,7 +506,7 @@ npm run android:release    # Build APK (auto-signed via Gradle)
 
 ### Android Performance (Estimated)
 
-| Metric | zmNinja | zmNg | Improvement |
+| Metric | zmNinja | zmNinjaNG | Improvement |
 |--------|---------|------|-------------|
 | **App Startup** | 3-5s | 1-2s | **2-3x faster** |
 | **APK Size** | 30-50 MB | 8-12 MB | **60-75% smaller** |
@@ -516,7 +516,7 @@ npm run android:release    # Build APK (auto-signed via Gradle)
 
 ### Runtime Operations
 
-| Operation | zmNinja | zmNg | Improvement |
+| Operation | zmNinja | zmNinjaNG | Improvement |
 |-----------|---------|------|-------------|
 | **Monitor Grid Render** | 200-300ms | 50-100ms | **3x faster** |
 | **Event List Scroll (300 events)** | Janky (30 FPS) | Smooth (60 FPS) | **Virtualized** |
@@ -576,7 +576,7 @@ $rootScope.authToken = null;
 - ❌ Race conditions
 - ❌ No type safety
 
-### zmNg (Zustand + React Query)
+### zmNinjaNG (Zustand + React Query)
 
 ```typescript
 // Centralized, typed auth store with persistence
@@ -693,7 +693,7 @@ jarsigner -verbose -sigalg SHA1withRSA \
 | **Debugging** | console.log hunting |
 | **Testing** | Manual only |
 
-### zmNg Build Process
+### zmNinjaNG Build Process
 
 **Development:**
 ```bash
@@ -741,17 +741,17 @@ npm run test:all        # All tests
 
 ### Maintainability Comparison
 
-| Metric | zmNinja | zmNg | Winner |
+| Metric | zmNinja | zmNinjaNG | Winner |
 |--------|---------|------|--------|
-| **Cyclomatic Complexity** | High (deeply nested) | Low (functional) | zmNg |
-| **Code Duplication** | ~25% | ~5% | zmNg |
-| **Avg Function Length** | 50-200 LOC | 10-50 LOC | zmNg |
-| **Avg File Size** | 500-2000 LOC | 100-400 LOC | zmNg |
-| **Coupling** | Tight (services ↔ controllers) | Loose (components) | zmNg |
-| **Cohesion** | Low (mixed concerns) | High (single responsibility) | zmNg |
-| **Type Coverage** | 0% | 100% | zmNg |
-| **Test Coverage** | 0% (manual only) | 35+ unit + E2E | zmNg |
-| **Documentation** | README only | Inline + README | zmNg |
+| **Cyclomatic Complexity** | High (deeply nested) | Low (functional) | zmNinjaNG |
+| **Code Duplication** | ~25% | ~5% | zmNinjaNG |
+| **Avg Function Length** | 50-200 LOC | 10-50 LOC | zmNinjaNG |
+| **Avg File Size** | 500-2000 LOC | 100-400 LOC | zmNinjaNG |
+| **Coupling** | Tight (services ↔ controllers) | Loose (components) | zmNinjaNG |
+| **Cohesion** | Low (mixed concerns) | High (single responsibility) | zmNinjaNG |
+| **Type Coverage** | 0% | 100% | zmNinjaNG |
+| **Test Coverage** | 0% (manual only) | 35+ unit + E2E | zmNinjaNG |
+| **Documentation** | README only | Inline + README | zmNinjaNG |
 
 ### Technical Debt
 
@@ -767,7 +767,7 @@ npm run test:all        # All tests
 - ❌ **Firebase bloat**
 - ❌ **Gulp-based builds**
 
-**zmNg Clean Slate:**
+**zmNinjaNG Clean Slate:**
 - ✅ **React 19** (actively developed, LTS)
 - ✅ **8 Capacitor plugins** (minimal maintenance)
 - ✅ **100% TypeScript** (compile-time safety)
@@ -797,7 +797,7 @@ npm run test:all        # All tests
 **Security vulnerabilities:** Likely (AngularJS EOL)
 **Maintenance burden:** Very High
 
-### zmNg Dependencies
+### zmNinjaNG Dependencies
 
 **Production Dependencies (56 total):**
 
@@ -901,7 +901,7 @@ Memory usage: +80 MB
 Filter change: 500ms (re-render all)
 ```
 
-**zmNg:**
+**zmNinjaNG:**
 ```
 Initial render: 120ms
 Virtual items rendered: ~15 DOM nodes
@@ -910,7 +910,7 @@ Memory usage: +15 MB
 Filter change: 80ms (virtual scroll reset)
 ```
 
-**Result:** zmNg is **20x faster** initial render, **94% fewer DOM nodes**, **5x better memory**
+**Result:** zmNinjaNG is **20x faster** initial render, **94% fewer DOM nodes**, **5x better memory**
 
 ### Test Scenario: Viewing 9 Camera Streams
 
@@ -922,7 +922,7 @@ Frame drops: Frequent (35-45 FPS)
 Battery drain (1 hour): ~18%
 ```
 
-**zmNg (estimated):**
+**zmNinjaNG (estimated):**
 ```
 Page load: 850ms
 Memory usage (snapshot mode): 160 MB
@@ -930,7 +930,7 @@ Frame drops: Rare (55-60 FPS)
 Battery drain (1 hour): ~12%
 ```
 
-**Result:** zmNg is **3.7x faster load**, **43% less memory**, **33% better battery**
+**Result:** zmNinjaNG is **3.7x faster load**, **43% less memory**, **33% better battery**
 
 ---
 
@@ -985,7 +985,7 @@ Battery drain (1 hour): ~12%
 });
 ```
 
-**zmNg (React + TypeScript - 15 LOC):**
+**zmNinjaNG (React + TypeScript - 15 LOC):**
 ```typescript
 // In API layer (reusable)
 export async function getMonitors(): Promise<Monitor[]> {
@@ -1032,7 +1032,7 @@ function Monitors() {
 
 **Verdict:** Maintenance mode, minimal new features expected
 
-### zmNg (Active Development)
+### zmNinjaNG (Active Development)
 
 **Current (v1.0.2):**
 - ✅ Modern stack (React 19, TypeScript 5.9, Vite 7)
@@ -1053,7 +1053,7 @@ function Monitors() {
 
 ### Key Achievements
 
-| Metric | zmNinja | zmNg | Improvement |
+| Metric | zmNinja | zmNinjaNG | Improvement |
 |--------|---------|------|-------------|
 | **Lines of Code** | ~78,000 | 23,003 | **-71%** |
 | **Source Files** | 79+ | 120 | Better modularization |
@@ -1071,7 +1071,7 @@ function Monitors() {
 
 ### The Bottom Line
 
-zmNg represents a **complete transformation** of zmNinja through modern web technologies:
+zmNinjaNG represents a **complete transformation** of zmNinja through modern web technologies:
 
 **Code & Architecture:**
 - ✅ **71% smaller codebase** (23K vs 78K LOC)
@@ -1109,7 +1109,7 @@ zmNg represents a **complete transformation** of zmNinja through modern web tech
 
 ### Final Assessment
 
-**zmNg is not just a rewrite—it's a complete evolution:**
+**zmNinjaNG is not just a rewrite—it's a complete evolution:**
 
 - Achieves feature parity with zmNinja
 - Dramatically improves performance across all metrics
@@ -1159,7 +1159,7 @@ zmNg represents a **complete transformation** of zmNinja through modern web tech
 - ❌ SQLite overhead
 - ❌ 200+ packages with vulnerabilities
 
-### zmNg Clean Architecture (Modern Best Practices)
+### zmNinjaNG Clean Architecture (Modern Best Practices)
 
 **Framework & Runtime:**
 - ✅ React 19 (actively developed, LTS)

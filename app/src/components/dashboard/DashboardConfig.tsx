@@ -29,7 +29,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useQuery } from '@tanstack/react-query';
 import { getMonitors } from '../../api/monitors';
 import { filterEnabledMonitors } from '../../lib/filters';
-import { GRID_LAYOUT } from '../../lib/zmng-constants';
+import { GRID_LAYOUT } from '../../lib/zmninja-ng-constants';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Input } from '../ui/input';

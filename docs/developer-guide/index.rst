@@ -1,7 +1,7 @@
 Developer Guide
 ===============
 
-This guide teaches you how to work on the zmNg codebase. It is written for
+This guide teaches you how to work on the zmNinjaNG codebase. It is written for
 developers who may not have React experience, explaining concepts from first
 principles with real examples from the code.
 
@@ -86,5 +86,5 @@ Development Quick Start
    npm test         # Run unit tests
    npm run build    # Build for production
 
-Also see the `AGENTS.md <https://github.com/pliablepixels/zmNg/blob/main/AGENTS.md>`_
+Also see the `AGENTS.md <https://github.com/pliablepixels/zmNinjaNG/blob/main/AGENTS.md>`_
 file for the full development guidelines and checklists.

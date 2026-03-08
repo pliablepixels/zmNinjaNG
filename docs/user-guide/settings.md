@@ -32,7 +32,7 @@ Switch to **Low bandwidth mode** when on mobile data or a slow connection. You c
 
 ## Notification Settings
 
-Configure how zmNg handles event notifications. See {doc}`notifications` for details.
+Configure how zmNinjaNG handles event notifications. See {doc}`notifications` for details.
 
 ## Server Information
 

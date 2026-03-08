@@ -1,7 +1,7 @@
 State Management with Zustand
 =============================
 
-This chapter explains how zmNg manages global application state using
+This chapter explains how zmNinjaNG manages global application state using
 Zustand.
 
 Why Do We Need Global State Management?
@@ -603,7 +603,7 @@ them dependencies:
 
 See Chapter 4 for detailed analysis of this pattern.
 
-Zustand Store Structure in zmNg
+Zustand Store Structure in zmNinjaNG
 -------------------------------
 
 We use multiple stores for different domains:

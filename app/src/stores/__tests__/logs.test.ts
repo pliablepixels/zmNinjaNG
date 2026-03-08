@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useLogStore } from '../logs';
-import { LOGGING } from '../../lib/zmng-constants';
+import { LOGGING } from '../../lib/zmninja-ng-constants';
 
 describe('Log Store', () => {
   beforeEach(() => {

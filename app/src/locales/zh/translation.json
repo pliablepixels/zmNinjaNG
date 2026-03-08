@@ -41,8 +41,8 @@
     "done": "完成"
   },
   "app": {
-    "name": "zmNg",
-    "logo_alt": "zmNg 标志",
+    "name": "zmNinjaNG",
+    "logo_alt": "zmNinjaNG 标志",
     "navigation_menu": "导航菜单",
     "navigation_menu_desc": "应用程序主导航。"
   },
@@ -637,7 +637,7 @@
     "credentials_incomplete": "请输入用户名和密码，或两者都留空。"
   },
   "setup": {
-    "welcome": "欢迎使用 zmNg",
+    "welcome": "欢迎使用 zmNinjaNG",
     "subtitle": "初始配置",
     "server_url": "服务器 URL",
     "server_url_hint": "例如 https://demo.zoneminder.com",

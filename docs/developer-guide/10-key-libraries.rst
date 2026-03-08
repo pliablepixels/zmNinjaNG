@@ -2,7 +2,7 @@ Key Libraries
 =============
 
 This chapter documents the critical third-party libraries that power
-zmNg and how they are used.
+zmNinjaNG and how they are used.
 
 UI and Visualization
 --------------------
@@ -140,15 +140,15 @@ the ZoneMinder streaming daemon.
 **When to use**: Interacting with ZoneMinder’s streaming server (ZMS) or
 monitor control APIs.
 
-zmng-constants.ts
+zmninja-ng-constants.ts
 ~~~~~~~~~~~~~~~~~
 
-**Application Configuration** - zmNg-specific settings and tuning
+**Application Configuration** - zmNinjaNG-specific settings and tuning
 parameters.
 
 .. code:: tsx
 
-   import { ZM_INTEGRATION, GRID_LAYOUT, TIMELINE } from '../lib/zmng-constants';
+   import { ZM_INTEGRATION, GRID_LAYOUT, TIMELINE } from '../lib/zmninja-ng-constants';
 
    // API timeouts and performance settings
    ZM_INTEGRATION.httpTimeout           // 10 seconds
@@ -168,7 +168,7 @@ parameters.
 UI layout.
 
 **Separation rationale**: - **zm-constants**: Never change (defined by
-ZoneMinder protocol) - **zmng-constants**: Can be tuned for performance,
+ZoneMinder protocol) - **zmninja-ng-constants**: Can be tuned for performance,
 UX, or platform differences
 
 Next Steps

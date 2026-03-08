@@ -4,7 +4,7 @@ Feature: Application Settings
   So that I can customize the app to my preferences
 
   Background:
-    Given I am logged into zmNg
+    Given I am logged into zmNinjaNG
 
   Scenario: View settings page
     When I navigate to the "Settings" page

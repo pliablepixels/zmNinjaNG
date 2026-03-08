@@ -324,7 +324,7 @@ export default function Logs() {
                             data-testid="log-source-zmng"
                         >
                             <Smartphone className="h-3 w-3 mr-1.5" />
-                            zmNg
+                            zmNinjaNG
                         </Button>
                         <Button
                             variant={logSource === 'server' ? 'default' : 'ghost'}

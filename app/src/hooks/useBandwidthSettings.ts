@@ -7,7 +7,7 @@
 
 import { useMemo } from 'react';
 import { useCurrentProfile } from './useCurrentProfile';
-import { getBandwidthSettings, type BandwidthSettings } from '../lib/zmng-constants';
+import { getBandwidthSettings, type BandwidthSettings } from '../lib/zmninja-ng-constants';
 
 /**
  * Hook to get bandwidth settings for the current profile.

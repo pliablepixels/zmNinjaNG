@@ -2,7 +2,7 @@
 
 [zmNinja](https://zmninja.zoneminder.com/) is a popular cross platform app (Desktop/iOS/Android) for [ZoneMinder](https://zoneminder.com/) (Open Source Home Security System) with 100K+ users. I built this over a couple of years. It is built with AngularJS, ionicv1 and cordova. These technologies have long been deprecated and its been a pain to keep the app updated. I have since moved on from thep project and the developers of ZoneMinder have found it to be hard to maintain.
 
-Over the last 2 days, I used Claude CLI to refactor the old zmNinja to zmNg - a complete ground up rewrite of the old zmNinja to a modern react based ecosystem. 
+Over the last 2 days, I used Claude CLI to refactor the old zmNinja to zmNinjaNG - a complete ground up rewrite of the old zmNinja to a modern react based ecosystem. 
 
 ## Quick summary of Before/After
 
@@ -10,7 +10,7 @@ Refer to more detailed information [here](COMPARISON.md)
 
 Overall, zmNinja was a massive monolith with repeated code that grew over time. I had no time to re-write it. Claude did an excellent job modularizing and completely rewriting it
 
-| Metric | zmNinja | zmNg | Reduction |
+| Metric | zmNinja | zmNinjaNG | Reduction |
 |--------|---------|------|-----------|
 | **JavaScript/TypeScript** | ~28,000 LOC | ~11,014 LOC | **61% less** |
 | **Templates/JSX** | ~3,000 LOC | (integrated) | Unified |

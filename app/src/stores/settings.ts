@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Layouts } from 'react-grid-layout';
 import { LogLevel } from '../lib/log-level';
-import type { BandwidthMode } from '../lib/zmng-constants';
+import type { BandwidthMode } from '../lib/zmninja-ng-constants';
 
 export type ViewMode = 'snapshot' | 'streaming';
 export type DisplayMode = 'normal' | 'compact';

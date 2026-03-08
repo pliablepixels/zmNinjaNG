@@ -4,7 +4,7 @@ Feature: Event Browsing and Management
   So that I can review recorded incidents
 
   Background:
-    Given I am logged into zmNg
+    Given I am logged into zmNinjaNG
 
   Scenario: Browse events in list view
     When I navigate to the "Events" page

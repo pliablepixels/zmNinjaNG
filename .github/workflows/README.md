@@ -1,6 +1,6 @@
 # GitHub Actions Build Workflows
 
-This directory contains automated build workflows for zmNg across multiple platforms.
+This directory contains automated build workflows for zmNinjaNG across multiple platforms.
 
 ## ⚠️ Quick Fix: macOS "Damaged App" Error
 
@@ -36,7 +36,7 @@ The easiest way to create a release is using the automated release script:
 This script will:
 1. Verify all changes are committed and pushed
 2. Read the version from `app/package.json`
-3. Create a git tag in the format `zmNg-{version}`
+3. Create a git tag in the format `zmNinjaNG-{version}`
 4. Push the tag to trigger all build workflows
 5. Create a GitHub Release with build artifacts
 
@@ -60,21 +60,21 @@ This script will:
 You can also manually push a tag to trigger builds:
 
 ```bash
-# Tag format must be: zmNg-{version}
-git tag zmNg-1.0.0
-git push origin zmNg-1.0.0
+# Tag format must be: zmNinjaNG-{version}
+git tag zmNinjaNG-1.0.0
+git push origin zmNinjaNG-1.0.0
 ```
 
 To move an existing tag to a new commit:
 
 ```bash
 # Delete old tag
-git tag -d zmNg-1.0.0
-git push origin --delete zmNg-1.0.0
+git tag -d zmNinjaNG-1.0.0
+git push origin --delete zmNinjaNG-1.0.0
 
 # Create new tag and push
-git tag zmNg-1.0.0
-git push origin zmNg-1.0.0 --force
+git tag zmNinjaNG-1.0.0
+git push origin zmNinjaNG-1.0.0 --force
 ```
 
 This will:
@@ -86,21 +86,21 @@ This will:
 After a successful build, artifacts are available for download:
 
 ### Android
-- `zmNg-android-debug-{version}.apk` - Debug-signed APK for sideloading
-- `zmNg-android-debug-{version}.aab` - Debug-signed App Bundle for testing
+- `zmNinjaNG-android-debug-{version}.apk` - Debug-signed APK for sideloading
+- `zmNinjaNG-android-debug-{version}.aab` - Debug-signed App Bundle for testing
 
 ### macOS
-- `zmNg.dmg` - DMG installer
-- `zmNg.app` - Application bundle
+- `zmNinjaNG.dmg` - DMG installer
+- `zmNinjaNG.app` - Application bundle
 
 ### Linux
-- `zmNg.AppImage` - Universal AppImage
-- `zmNg.deb` - Debian package
-- `zmNg.rpm` - RPM package
+- `zmNinjaNG.AppImage` - Universal AppImage
+- `zmNinjaNG.deb` - Debian package
+- `zmNinjaNG.rpm` - RPM package
 
 ### Windows
-- `zmNg.msi` - MSI installer
-- `zmNg.exe` - NSIS installer (if configured)
+- `zmNinjaNG.msi` - MSI installer
+- `zmNinjaNG.exe` - NSIS installer (if configured)
 
 ## Customizing Release Notes
 
@@ -172,7 +172,7 @@ See Tauri documentation for details: https://tauri.app/v1/guides/distribution/si
 
 ## macOS "Damaged" App Error
 
-If you get a **"zmNg.app is damaged and can't be opened. You should move it to the Trash"** error, this is because the app is not signed/notarized. You have two options:
+If you get a **"zmNinjaNG.app is damaged and can't be opened. You should move it to the Trash"** error, this is because the app is not signed/notarized. You have two options:
 
 
 ### Option 1: Bypass Security

@@ -680,7 +680,7 @@ Performance Pitfalls
      );
    }
 
-**Real zmNg example (TimelineWidget):**
+**Real zmNinjaNG example (TimelineWidget):**
 
 .. code:: tsx
 
@@ -813,7 +813,7 @@ Use a ref to track when you’re syncing from store vs. user interaction:
 - ``requestAnimationFrame`` fires after the current frame’s DOM updates,
   ensuring React has processed the state change
 
-**Real zmNg example (DashboardLayout.tsx):**
+**Real zmNinjaNG example (DashboardLayout.tsx):**
 
 .. code:: tsx
 

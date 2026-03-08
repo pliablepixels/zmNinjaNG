@@ -1,7 +1,7 @@
 Project Architecture
 ====================
 
-This chapter describes the overall structure of the zmNg project,
+This chapter describes the overall structure of the zmNinjaNG project,
 including non-component logic and the component hierarchy.
 
 Directory Structure

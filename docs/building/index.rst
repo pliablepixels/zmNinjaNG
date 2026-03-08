@@ -1,7 +1,7 @@
 Building for Mobile & Desktop
 =============================
 
-zmNg can be built as a native mobile app (Android, iOS) or a desktop app
+zmNinjaNG can be built as a native mobile app (Android, iOS) or a desktop app
 (macOS, Windows, Linux). The same source code is used across all platforms.
 
 Prerequisites
@@ -68,8 +68,8 @@ Mobile Builds
 Automated Releases
 ------------------
 
-zmNg uses GitHub Actions to build release binaries automatically. See
-`make_release.sh <https://github.com/pliablepixels/zmNg/blob/main/scripts/make_release.sh>`_
+zmNinjaNG uses GitHub Actions to build release binaries automatically. See
+`make_release.sh <https://github.com/pliablepixels/zmNinjaNG/blob/main/scripts/make_release.sh>`_
 for the release workflow.
 
 To enable automated builds on your fork:

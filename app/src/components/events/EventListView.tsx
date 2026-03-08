@@ -14,7 +14,7 @@ import { Button } from '../ui/button';
 import { EventCard } from './EventCard';
 import { getEventImageUrl } from '../../api/events';
 import { calculateThumbnailDimensions, EVENT_GRID_CONSTANTS } from '../../lib/event-utils';
-// import { EVENT_LIST } from '../../lib/zmng-constants';
+// import { EVENT_LIST } from '../../lib/zmninja-ng-constants';
 import type { Monitor, Tag } from '../../api/types';
 
 interface EventListViewProps {

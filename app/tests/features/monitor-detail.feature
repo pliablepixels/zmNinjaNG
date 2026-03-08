@@ -4,7 +4,7 @@ Feature: Monitor Detail Page
   So that I can view live streams and control cameras
 
   Background:
-    Given I am logged into zmNg
+    Given I am logged into zmNinjaNG
     When I navigate to the "Monitors" page
     And I click into the first monitor detail page
 

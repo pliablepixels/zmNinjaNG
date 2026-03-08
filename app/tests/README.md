@@ -1,4 +1,4 @@
-# Testing Guide for zmNg
+# Testing Guide for zmNinjaNG
 
 Comprehensive testing strategy with unit tests and BDD-first E2E tests.
 
@@ -23,7 +23,7 @@ npm run test:e2e:ui
 
 ## Testing Strategy
 
-zmNg uses a layered testing approach:
+zmNinjaNG uses a layered testing approach:
 
 1. **Unit Tests** (Vitest) - Test pure functions, utilities, and logic
    - Fast execution (< 2 seconds)
@@ -227,7 +227,7 @@ Feature: Full Application Walkthrough
   So that I can verify the application works correctly
 
   Background:
-    Given I am logged into zmNg
+    Given I am logged into zmNinjaNG
 
   Scenario: Dashboard - Add and verify widget
     When I navigate to the "Dashboard" page

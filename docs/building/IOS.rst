@@ -1,7 +1,7 @@
 iOS Build Guide
 ===============
 
-This guide walks you through setting up and building the zmNg iOS app
+This guide walks you through setting up and building the zmNinjaNG iOS app
 from scratch.
 
 Prerequisites
@@ -50,8 +50,8 @@ Project Setup
 
 .. code:: bash
 
-   git clone https://github.com/pliablepixels/zmNg
-   cd zmNg/app
+   git clone https://github.com/pliablepixels/zmNinjaNG
+   cd zmNinjaNG/app
 
 2. Install Dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -86,8 +86,8 @@ Messaging (FCM) and Apple Push Notification Service (APNs):
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 1. In Firebase Console, click **Add app** and select **iOS**
-2. Enter the bundle ID: ``com.pliablepixels.zmng``
-3. (Optional) Enter an app nickname: “zmNg iOS”
+2. Enter the bundle ID: ``com.zoneminder.zmNinjaNG``
+3. (Optional) Enter an app nickname: “zmNinjaNG iOS”
 4. Click **Register app**
 
 3. Download Configuration File
@@ -99,7 +99,7 @@ Messaging (FCM) and Apple Push Notification Service (APNs):
 
    ::
 
-      zmNg/app/ios/App/App/GoogleService-Info.plist
+      zmNinjaNG/app/ios/App/App/GoogleService-Info.plist
 
 4. Configure Apple Push Notifications (APNs)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -115,7 +115,7 @@ Create APNs Key
 2. Navigate to **Certificates, Identifiers & Profiles**
 3. Click **Keys** in the sidebar
 4. Click the **+** button to create a new key
-5. Enter a name (e.g., “zmNg Push Notifications”)
+5. Enter a name (e.g., “zmNinjaNG Push Notifications”)
 6. Check **Apple Push Notifications service (APNs)**
 7. Click **Continue** and then **Register**
 8. Download the ``.p8`` key file and note the **Key ID**
@@ -153,7 +153,7 @@ Upload APNs Key to Firebase
 6. Configure ZoneMinder Event Notification Server
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-zmNg works out of the box with zmES web socket notifications. If you
+zmNinjaNG works out of the box with zmES web socket notifications. If you
 want push notification support, the ZoneMinder event notification server
 (``zmeventnotification.pl``) needs to be configured to work with your
 Firebase project. You will need to use a modified version that I

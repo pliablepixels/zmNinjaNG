@@ -7,7 +7,7 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import { GRID_LAYOUT } from '../../../lib/zmng-constants';
+import { GRID_LAYOUT } from '../../../lib/zmninja-ng-constants';
 import { useSettingsStore } from '../../../stores/settings';
 import { getMonitorAspectRatio } from '../../../lib/monitor-rotation';
 import type { Layout } from 'react-grid-layout';

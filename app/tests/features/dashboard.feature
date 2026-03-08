@@ -4,7 +4,7 @@ Feature: Dashboard Customization
   So that I can see the information I care about
 
   Background:
-    Given I am logged into zmNg
+    Given I am logged into zmNinjaNG
 
   Scenario: Add a timeline widget
     When I navigate to the "Dashboard" page

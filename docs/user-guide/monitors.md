@@ -30,7 +30,7 @@ The detail view for a single monitor provides:
 
 ### Live View
 
-A live stream from the camera. zmNg supports multiple streaming modes:
+A live stream from the camera. zmNinjaNG supports multiple streaming modes:
 
 - **Snapshot mode** - Periodically refreshed JPEG images (lower bandwidth)
 - **MJPEG streaming** - Motion JPEG stream via ZoneMinder's zms

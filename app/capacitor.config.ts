@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.zoneminder.zmNinjaNG',
-  appName: 'zmNg',
+  appName: 'zmNinjaNG',
   webDir: 'dist',
   server: {
     cleartext: true,

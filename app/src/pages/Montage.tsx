@@ -7,7 +7,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { getMonitors } from '../api/monitors';
-import { GRID_LAYOUT } from '../lib/zmng-constants';
+import { GRID_LAYOUT } from '../lib/zmninja-ng-constants';
 import { useCurrentProfile } from '../hooks/useCurrentProfile';
 import { useBandwidthSettings } from '../hooks/useBandwidthSettings';
 import { useAuthStore } from '../stores/auth';

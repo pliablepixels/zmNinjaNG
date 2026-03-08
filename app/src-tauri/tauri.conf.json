@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "zmNg",
+  "productName": "zmNinjaNG",
   "version": "1.0.4",
   "identifier": "com.zoneminder.zmNinjaNG",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "zmNg",
+        "title": "zmNinjaNG",
         "width": 800,
         "height": 600,
         "resizable": true,

@@ -1,14 +1,14 @@
-Introduction to zmNg Development
+Introduction to zmNinjaNG Development
 ================================
 
-Welcome to the zmNg developer guide. This guide is designed for
+Welcome to the zmNinjaNG developer guide. This guide is designed for
 experienced programmers who may not be familiar with React or modern
 frontend development patterns.
 
-What is zmNg?
+What is zmNinjaNG?
 -------------
 
-zmNg is a cross-platform mobile and desktop application for ZoneMinder,
+zmNinjaNG is a cross-platform mobile and desktop application for ZoneMinder,
 an open-source video surveillance system. It’s built using:
 
 - **React**: A JavaScript library for building user interfaces
@@ -21,7 +21,7 @@ an open-source video surveillance system. It’s built using:
 - **TypeScript**: A typed superset of JavaScript that catches errors at
   compile time
 
-**The key insight**: zmNg is a web application that runs everywhere. The
+**The key insight**: zmNinjaNG is a web application that runs everywhere. The
 same React code is packaged as: - A native iOS app (via Capacitor) - A
 native Android app (via Capacitor) - A native desktop app (via Tauri) -
 A web app (runs in browser)
@@ -36,7 +36,7 @@ This guide assumes you: - Are an experienced programmer in at least one
 language - Understand basic programming concepts (variables, functions,
 classes, etc.) - May not be familiar with React, JavaScript ecosystem,
 or frontend development - Want to understand the architecture and
-patterns used in zmNg
+patterns used in zmNinjaNG
 
 If you’re coming from backend development, Java, C++, Python, or similar
 languages, we’ll explain React concepts from first principles.
@@ -88,7 +88,7 @@ If you’re familiar with React:
 Code Examples
 -------------
 
-Throughout this guide, we use real examples from the zmNg codebase. File
+Throughout this guide, we use real examples from the zmNinjaNG codebase. File
 paths are shown relative to the :doc:``app/`` directory:
 
 ::

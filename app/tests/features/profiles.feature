@@ -4,7 +4,7 @@ Feature: Profile Management
   So that I can connect to different ZoneMinder instances
 
   Background:
-    Given I am logged into zmNg
+    Given I am logged into zmNinjaNG
 
   Scenario: View profiles list
     When I navigate to the "Profiles" page

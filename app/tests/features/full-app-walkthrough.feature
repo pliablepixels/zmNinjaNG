@@ -4,7 +4,7 @@ Feature: Full Application Walkthrough
   So that I can verify the entire application works correctly
 
   Background:
-    Given I am logged into zmNg
+    Given I am logged into zmNinjaNG
 
   Scenario: Dashboard - Add and verify widget
     When I navigate to the "Dashboard" page

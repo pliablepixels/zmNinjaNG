@@ -9,7 +9,7 @@ import { Badge } from '../ui/badge';
 import { Checkbox } from '../ui/checkbox';
 import { useSettingsStore, type WebRTCProtocol } from '../../stores/settings';
 import { useCurrentProfile } from '../../hooks/useCurrentProfile';
-import { getBandwidthSettings, type BandwidthMode } from '../../lib/zmng-constants';
+import { getBandwidthSettings, type BandwidthMode } from '../../lib/zmninja-ng-constants';
 
 // Protocol checkbox configuration
 const PROTOCOLS: { id: WebRTCProtocol; label: string; descKey: string }[] = [

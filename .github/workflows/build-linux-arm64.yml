@@ -9,7 +9,7 @@ on:
         type: string
   push:
     tags:
-      - 'zmNg-*'
+      - 'zmNinjaNG-*'
 
 permissions:
   contents: write
@@ -50,40 +50,40 @@ jobs:
       - name: Rename Linux ARM64 artifacts
         run: |
           VERSION="${{ github.event.inputs.version || github.ref_name }}"
-          VERSION="${VERSION#zmNg-}"
+          VERSION="${VERSION#zmNinjaNG-}"
           mkdir -p dist/linux-arm64
 
           # Rename AppImage
           for appimage in app/src-tauri/target/release/bundle/appimage/*.AppImage; do
             if [ -f "$appimage" ]; then
-              cp "$appimage" "dist/linux-arm64/zmNg-${VERSION}-linux-arm64.AppImage"
+              cp "$appimage" "dist/linux-arm64/zmNinjaNG-${VERSION}-linux-arm64.AppImage"
             fi
           done
 
           # Rename DEB
           for deb in app/src-tauri/target/release/bundle/deb/*.deb; do
             if [ -f "$deb" ]; then
-              cp "$deb" "dist/linux-arm64/zmNg-${VERSION}-linux-arm64.deb"
+              cp "$deb" "dist/linux-arm64/zmNinjaNG-${VERSION}-linux-arm64.deb"
             fi
           done
 
           # Rename RPM
           for rpm in app/src-tauri/target/release/bundle/rpm/*.rpm; do
             if [ -f "$rpm" ]; then
-              cp "$rpm" "dist/linux-arm64/zmNg-${VERSION}-linux-arm64.rpm"
+              cp "$rpm" "dist/linux-arm64/zmNinjaNG-${VERSION}-linux-arm64.rpm"
             fi
           done
 
       - name: Upload Linux ARM64 artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: zmNg-linux-arm64-${{ github.event.inputs.version || github.ref_name }}
+          name: zmNinjaNG-linux-arm64-${{ github.event.inputs.version || github.ref_name }}
           path: dist/linux-arm64/*
           retention-days: 30
 
       - name: Upload to Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/zmNg-')
+        if: startsWith(github.ref, 'refs/tags/zmNinjaNG-')
         with:
             files: |
               dist/linux-arm64/*.AppImage

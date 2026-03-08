@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Monitor } from '../../api/types';
 import { getMonitorAspectRatio } from '../../lib/monitor-rotation';
-import { GRID_LAYOUT } from '../../lib/zmng-constants';
+import { GRID_LAYOUT } from '../../lib/zmninja-ng-constants';
 
 /**
  * Unit tests for Montage layout calculations
