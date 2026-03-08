@@ -36,7 +36,7 @@ fi
 TAG="zmNinjaNG-$VERSION"
 
 echo "==================================================="
-echo "   ZoneMinder Next Gen (zmNinjaNG) Release Script"
+echo "   zmNinjaNG Release Script"
 echo "==================================================="
 echo "Detected Version: $VERSION"
 echo "Target Tag:       $TAG"
