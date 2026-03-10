@@ -43,9 +43,11 @@ export async function registerToken(params: {
   interval?: number;
   pushState?: 'enabled' | 'disabled';
   appVersion?: string;
+  profile?: string;
 }): Promise<ZMNotification> {
   log.api('Registering notification token via ZM API', LogLevel.INFO, {
     platform: params.platform,
+    profile: params.profile,
   });
 
   const client = getApiClient();
@@ -56,6 +58,7 @@ export async function registerToken(params: {
   if (params.interval !== undefined) formData.append('Notification[Interval]', String(params.interval));
   if (params.pushState) formData.append('Notification[PushState]', params.pushState);
   if (params.appVersion) formData.append('Notification[AppVersion]', params.appVersion);
+  if (params.profile) formData.append('Notification[Profile]', params.profile.slice(0, 128));
 
   const resp = await client.post<NotificationResponse>('/notifications.json', formData.toString(), {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

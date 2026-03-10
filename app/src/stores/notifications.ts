@@ -13,6 +13,7 @@ import {
 import { log, LogLevel } from '../lib/logger';
 import { getAppVersion } from '../lib/version';
 import { updateNotification } from '../api/notifications';
+import { useProfileStore } from './profile';
 
 export interface NotificationSettings {
   enabled: boolean;
@@ -478,7 +479,8 @@ export const useNotificationStore = create<NotificationState>()(
         const monitorIds = enabledFilters.map((f) => f.monitorId);
         const intervals = enabledFilters.map((f) => f.checkInterval);
 
-        await service.registerPushToken(token, platform, monitorIds, intervals);
+        const profile = useProfileStore.getState().profiles.find(p => p.id === currentProfileId);
+        await service.registerPushToken(token, platform, monitorIds, intervals, profile?.name);
       },
 
       deregisterPushToken: async (token: string, platform: 'ios' | 'android') => {
@@ -492,7 +494,8 @@ export const useNotificationStore = create<NotificationState>()(
         log.notifications('Deregistering push token', LogLevel.INFO, { platform, profileId: currentProfileId });
 
         const service = getNotificationService();
-        await service.deregisterPushToken(token, platform);
+        const profile = useProfileStore.getState().profiles.find(p => p.id === currentProfileId);
+        await service.deregisterPushToken(token, platform, profile?.name);
       },
 
       // ========== Internal Methods ==========

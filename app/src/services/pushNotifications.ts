@@ -31,6 +31,7 @@ export interface PushNotificationData {
   monitorName?: string;
   cause?: string;
   notification_foreground?: string;
+  profile?: string;
   // ZM direct mode format fields
   MonitorId?: string;
   EventId?: string;
@@ -247,7 +248,7 @@ export class MobilePushService {
 
     try {
       await tempService.connect(config);
-      await tempService.deregisterPushToken(token, platform);
+      await tempService.deregisterPushToken(token, platform, profile.name);
 
       // Brief delay to let the WebSocket flush the send buffer
       await new Promise(resolve => setTimeout(resolve, 200));
@@ -353,7 +354,10 @@ export class MobilePushService {
         const monitorList = settings.allMonitors ? undefined : enabledFilters.map(f => f.monitorId).join(',');
         const interval = settings.allMonitors ? 0 : Math.max(0, ...enabledFilters.map(f => f.checkInterval));
 
-        log.push('Registering FCM token via ZM REST API (direct mode)', LogLevel.INFO, { platform });
+        const { profiles } = useProfileStore.getState();
+        const currentProfile = profiles.find(p => p.id === profileId);
+
+        log.push('Registering FCM token via ZM REST API (direct mode)', LogLevel.INFO, { platform, profile: currentProfile?.name });
 
         const result = await registerToken({
           token,
@@ -362,6 +366,7 @@ export class MobilePushService {
           interval,
           pushState: 'enabled',
           appVersion: getAppVersion(),
+          profile: currentProfile?.name,
         });
 
         notificationStore.updateProfileSettings(profileId, { notificationId: result.Id });

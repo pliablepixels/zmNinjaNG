@@ -128,7 +128,8 @@ export class ZMNotificationService {
     token: string,
     platform: 'ios' | 'android',
     monitorIds?: number[],
-    intervals?: number[]
+    intervals?: number[],
+    profileName?: string
   ): Promise<void> {
     if (!this._isConnected()) {
       throw new Error('Not connected to notification server');
@@ -143,12 +144,14 @@ export class ZMNotificationService {
         ...(monitorIds && { monlist: monitorIds.join(',') }),
         ...(intervals && { intlist: intervals.join(',') }),
         state: 'enabled',
+        ...(profileName && { profile: profileName.slice(0, 128) }),
       },
     };
 
     log.notifications('Registering push token', LogLevel.INFO, {
       platform,
       monitorCount: monitorIds?.length,
+      profileName,
     });
 
     this._send(message);
@@ -159,7 +162,8 @@ export class ZMNotificationService {
    */
   public async deregisterPushToken(
     token: string,
-    platform: 'ios' | 'android'
+    platform: 'ios' | 'android',
+    profileName?: string
   ): Promise<void> {
     if (!this._isConnected()) {
       log.notifications('Cannot deregister push token - not connected', LogLevel.WARN);
@@ -173,10 +177,11 @@ export class ZMNotificationService {
         token,
         platform,
         state: 'disabled',
+        ...(profileName && { profile: profileName.slice(0, 128) }),
       },
     };
 
-    log.notifications('Deregistering push token', LogLevel.INFO, { platform, });
+    log.notifications('Deregistering push token', LogLevel.INFO, { platform, profileName });
 
     this._send(message);
   }
