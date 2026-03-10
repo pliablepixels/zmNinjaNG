@@ -470,6 +470,9 @@ export function NotificationHandler() {
           )}
           <div className="flex-1 min-w-0">
             <div className="font-semibold text-sm">{latestEvent.MonitorName}</div>
+            {currentProfile && (
+              <div className="text-xs text-muted-foreground/70">{currentProfile.name}</div>
+            )}
             {(() => {
               const CauseIcon = getEventCauseIcon(latestEvent.Cause);
               return (

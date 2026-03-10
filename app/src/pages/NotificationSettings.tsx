@@ -121,7 +121,7 @@ export default function NotificationSettings() {
         try {
           const { getPushService } = await import('../services/pushNotifications');
           const pushService = getPushService();
-          await pushService.deregister();
+          await pushService.deregister(currentProfile.id);
           log.notificationSettings('Deregistered from push notifications', LogLevel.INFO);
         } catch (error) {
           log.notificationSettings('Failed to deregister from push notifications', LogLevel.ERROR, error);

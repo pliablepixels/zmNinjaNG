@@ -16,6 +16,8 @@ import { useProfileStore } from '../stores/profile';
 import { useAuthStore } from '../stores/auth';
 import { registerToken, deleteNotification } from '../api/notifications';
 import { getAppVersion } from '../lib/version';
+import { ZMNotificationService } from './notifications';
+import type { ZMEventServerConfig } from '../types/notifications';
 
 /**
  * Data payload sent by zmeventnotification server via FCM.
@@ -141,9 +143,13 @@ export class MobilePushService {
   }
 
   /**
-   * Deregister from push notifications and notify server
+   * Deregister from push notifications and notify server.
+   * @param overrideProfileId - Profile ID to deregister for. Required because
+   *   the store's currentProfileId may already be null if disconnect() was
+   *   called before this method (e.g., when updateProfileSettings triggers
+   *   an automatic disconnect).
    */
-  public async deregister(): Promise<void> {
+  public async deregister(overrideProfileId?: string): Promise<void> {
     if (!Capacitor.isNativePlatform()) {
       return;
     }
@@ -157,7 +163,7 @@ export class MobilePushService {
 
     try {
       const notificationStore = useNotificationStore.getState();
-      const profileId = notificationStore.currentProfileId;
+      const profileId = overrideProfileId || notificationStore.currentProfileId;
 
       if (profileId) {
         const settings = notificationStore.getProfileSettings(profileId);
@@ -170,11 +176,19 @@ export class MobilePushService {
             await deleteNotification(notifId);
             notificationStore.updateProfileSettings(profileId, { notificationId: null });
           }
-        } else if (notificationStore.isConnected) {
+        } else {
           // ES mode: deregister via websocket
           const platform = Capacitor.getPlatform() as 'ios' | 'android';
-          log.push('Sending disabled state to notification server', LogLevel.INFO, { platform });
-          await notificationStore.deregisterPushToken(this.currentToken, platform);
+
+          if (notificationStore.isConnected) {
+            // Already connected — send directly
+            log.push('Sending disabled state to notification server', LogLevel.INFO, { platform });
+            await notificationStore.deregisterPushToken(this.currentToken, platform);
+          } else {
+            // Not connected — temporarily connect to send the deregister
+            log.push('Not connected to ES, using temporary connection to deregister', LogLevel.INFO, { platform });
+            await this._deregisterViaTemporaryConnection(profileId, this.currentToken, platform);
+          }
         }
       }
 
@@ -183,6 +197,66 @@ export class MobilePushService {
     } catch (error) {
       log.push('Failed to deregister from push notifications', LogLevel.ERROR, error);
       throw error;
+    }
+  }
+
+  /**
+   * Establish a temporary WebSocket connection to the EventServer
+   * solely to send a push token deregistration message, then disconnect.
+   */
+  private async _deregisterViaTemporaryConnection(
+    profileId: string,
+    token: string,
+    platform: 'ios' | 'android'
+  ): Promise<void> {
+    const notificationStore = useNotificationStore.getState();
+    const settings = notificationStore.getProfileSettings(profileId);
+
+    if (!settings.host) {
+      log.push('Cannot deregister via temp connection - no ES host configured', LogLevel.WARN, { profileId });
+      return;
+    }
+
+    const { profiles } = useProfileStore.getState();
+    const profile = profiles.find(p => p.id === profileId);
+
+    if (!profile?.username) {
+      log.push('Cannot deregister via temp connection - no username', LogLevel.WARN, { profileId });
+      return;
+    }
+
+    const getDecryptedPassword = useProfileStore.getState().getDecryptedPassword;
+    const password = await getDecryptedPassword(profileId);
+
+    if (!password) {
+      log.push('Cannot deregister via temp connection - failed to decrypt password', LogLevel.WARN, { profileId });
+      return;
+    }
+
+    const config: ZMEventServerConfig = {
+      host: settings.host,
+      port: settings.port,
+      ssl: settings.ssl,
+      username: profile.username,
+      password,
+      appVersion: getAppVersion(),
+      portalUrl: profile.portalUrl,
+    };
+
+    const tempService = new ZMNotificationService();
+
+    try {
+      await tempService.connect(config);
+      await tempService.deregisterPushToken(token, platform);
+
+      // Brief delay to let the WebSocket flush the send buffer
+      await new Promise(resolve => setTimeout(resolve, 200));
+
+      log.push('Deregistered push token via temporary ES connection', LogLevel.INFO, { profileId });
+    } catch (error) {
+      log.push('Failed to deregister via temporary ES connection', LogLevel.ERROR, error);
+    } finally {
+      tempService.disconnect();
     }
   }
 
