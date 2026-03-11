@@ -55,7 +55,6 @@ export default function ProfileForm() {
 
   // Self-signed certificate support
   const [allowSelfSignedCerts, setAllowSelfSignedCerts] = useState(false);
-  const [trustedFingerprint, setTrustedFingerprint] = useState<string | null>(null);
 
   // TOFU cert trust dialog state
   const [certDialogOpen, setCertDialogOpen] = useState(false);
@@ -73,10 +72,9 @@ export default function ProfileForm() {
 
   const handleCertTrust = useCallback(() => {
     setCertDialogOpen(false);
-    if (certInfo) setTrustedFingerprint(certInfo.fingerprint);
     certResolveRef.current?.(true);
     certResolveRef.current = null;
-  }, [certInfo]);
+  }, []);
 
   const handleCertCancel = useCallback(() => {
     setCertDialogOpen(false);
@@ -199,6 +197,7 @@ export default function ProfileForm() {
       let apiUrl: string;
       let cgiUrl: string;
       let go2rtcPath: string | null = null;
+      let acceptedFingerprint: string | null = null;
 
       if (showManualUrls) {
         // Manual URL entry mode
@@ -256,8 +255,11 @@ export default function ProfileForm() {
             setTesting(false);
             return;
           }
+          // Save to local var (React state update from handleCertTrust is batched
+          // and won't be available until next render)
+          acceptedFingerprint = info.fingerprint;
           // Apply fingerprint-based trust (installs WebView handler)
-          await applySSLTrustSetting(true, info.fingerprint);
+          await applySSLTrustSetting(true, acceptedFingerprint);
         }
       }
 
@@ -323,7 +325,7 @@ export default function ProfileForm() {
         const { useSettingsStore } = await import('../stores/settings');
         useSettingsStore.getState().updateProfileSettings(newProfileId, {
           allowSelfSignedCerts: true,
-          trustedCertFingerprint: trustedFingerprint,
+          trustedCertFingerprint: acceptedFingerprint,
         });
       }
 
