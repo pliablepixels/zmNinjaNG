@@ -845,8 +845,11 @@ Direct mode:
 - **Foreground (Poller/Direct desktop)**: The event poller adds new
   events to the store. Toasts are shown by ``NotificationHandler``.
 - **Background/Closed**: Tapping a system notification triggers
-  ``notificationActionPerformed``. The app launches and navigates to
-  the event detail page.
+  ``notificationActionPerformed``. The handler calls
+  ``navigationService.navigateToEvent()`` with state
+  ``{ from: '/monitors', fromNotification: true }`` so that the back
+  button navigates to monitors (instead of an empty history stack)
+  and the route is not persisted as ``lastRoute``.
 
 **5. Deduplication**
 

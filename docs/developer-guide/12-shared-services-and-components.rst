@@ -1153,6 +1153,48 @@ duplication:
 These changes reduced code by ~600+ lines while improving
 maintainability.
 
+Navigation Service (``lib/navigation.ts``)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Bridges non-React code (services, push notification handlers) with React
+Router. Services cannot call ``useNavigate()`` directly, so they emit
+navigation events through this singleton and ``NotificationHandler``
+listens and forwards them to the router.
+
+**API:**
+
+.. code:: typescript
+
+   import { navigationService } from '../lib/navigation';
+
+   // Navigate to an event (e.g., from push notification tap)
+   navigationService.navigateToEvent(eventId, {
+     from: '/monitors',        // back-button destination
+     fromNotification: true,   // skip lastRoute persistence
+   });
+
+   // Generic navigation
+   navigationService.navigate('/monitors/5');
+
+   // Listen in a React component
+   useEffect(() => {
+     const unsubscribe = navigationService.addListener((event) => {
+       navigate(event.path, { replace: event.replace, state: event.state });
+     });
+     return unsubscribe;
+   }, [navigate]);
+
+**NavigationState properties:**
+
+- ``from`` — explicit back-button destination (read by EventDetail/MonitorDetail
+  via ``location.state?.from``)
+- ``fromNotification`` — when ``true``, AppLayout skips saving the route as
+  ``lastRoute`` so the app does not reopen to a transient event playback screen
+
+**Used By:** pushNotifications.ts, NotificationHandler.tsx
+
+--------------
+
 Notification Services (services/)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1204,6 +1246,8 @@ orchestrates the notification lifecycle:
 - Mobile: ``appStateChange`` listener checks WebSocket liveness on app resume
 - Displays toast notifications for new events
 - Clears native badges on app resume (iOS/Android)
+- Listens to ``navigationService`` events and forwards them to React Router
+  (with state for back-button and lastRoute control)
 
 --------------
 
