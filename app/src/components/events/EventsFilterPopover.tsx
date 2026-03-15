@@ -5,9 +5,10 @@
  * Provides filtering UI for events by monitors, favorites, tags, and date range.
  */
 
-import { Star, Tag, X, Loader2 } from 'lucide-react';
+import { Star, Tag, X, Loader2, ScanSearch } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { MonitorData, Tag as TagType } from '../../api/types';
+import { ALL_TAGS_FILTER_ID } from '../../hooks/useEventFilters';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
@@ -37,6 +38,9 @@ interface EventsFilterPopoverProps {
   selectedTagIds?: string[];
   onTagSelectionChange?: (ids: string[]) => void;
   isLoadingTags?: boolean;
+  // Object detection filter
+  onlyDetectedObjects?: boolean;
+  onOnlyDetectedObjectsChange?: (value: boolean) => void;
 }
 
 export function EventsFilterPopover({
@@ -57,19 +61,30 @@ export function EventsFilterPopover({
   selectedTagIds = [],
   onTagSelectionChange,
   isLoadingTags = false,
+  onlyDetectedObjects = false,
+  onOnlyDetectedObjectsChange,
 }: EventsFilterPopoverProps) {
   const { t } = useTranslation();
 
-  // Get selected tags for display
+  const isAllTagsSelected = selectedTagIds.includes(ALL_TAGS_FILTER_ID);
+
+  // Get selected tags for display (exclude the "All" sentinel)
   const selectedTags = availableTags.filter((tag) =>
     selectedTagIds.includes(tag.Id)
   );
 
   const handleTagToggle = (tagId: string) => {
     if (!onTagSelectionChange) return;
-    const newSelection = selectedTagIds.includes(tagId)
-      ? selectedTagIds.filter((id) => id !== tagId)
-      : [...selectedTagIds, tagId];
+    if (tagId === ALL_TAGS_FILTER_ID) {
+      // Toggle "All" — mutually exclusive with individual tags
+      onTagSelectionChange(isAllTagsSelected ? [] : [ALL_TAGS_FILTER_ID]);
+      return;
+    }
+    // Selecting an individual tag deselects "All"
+    const withoutAll = selectedTagIds.filter((id) => id !== ALL_TAGS_FILTER_ID);
+    const newSelection = withoutAll.includes(tagId)
+      ? withoutAll.filter((id) => id !== tagId)
+      : [...withoutAll, tagId];
     onTagSelectionChange(newSelection);
   };
 
@@ -122,6 +137,22 @@ export function EventsFilterPopover({
           />
         </div>
 
+        {/* Object detection filter */}
+        <div className="flex items-center justify-between p-3 rounded-md border bg-card">
+          <div className="flex items-center gap-2">
+            <ScanSearch className="h-4 w-4 text-muted-foreground" />
+            <Label htmlFor="only-detected" className="cursor-pointer">
+              {t('events.filter.onlyDetectedObjects')}
+            </Label>
+          </div>
+          <Switch
+            id="only-detected"
+            checked={onlyDetectedObjects}
+            onCheckedChange={onOnlyDetectedObjectsChange}
+            data-testid="events-detected-objects-toggle"
+          />
+        </div>
+
         {/* Tags filter - only show if tags are supported */}
         {tagsSupported && (
           <div className="p-3 rounded-md border bg-card space-y-2">
@@ -146,8 +177,17 @@ export function EventsFilterPopover({
             )}
 
             {/* Selected tags */}
-            {selectedTags.length > 0 && (
+            {(isAllTagsSelected || selectedTags.length > 0) && (
               <div className="flex flex-wrap gap-1.5" data-testid="events-selected-tags">
+                {isAllTagsSelected && (
+                  <span
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary cursor-pointer"
+                    onClick={() => handleRemoveTag(ALL_TAGS_FILTER_ID)}
+                  >
+                    {t('events.filter.allTags')}
+                    <X className="h-3 w-3" />
+                  </span>
+                )}
                 {selectedTags.map((tag) => (
                   <TagChip
                     key={tag.Id}
@@ -160,9 +200,27 @@ export function EventsFilterPopover({
               </div>
             )}
 
-            {/* Available tags dropdown */}
+            {/* Available tags list */}
             {!isLoadingTags && availableTags.length > 0 && (
               <div className="max-h-32 overflow-y-auto space-y-1 border rounded-md p-2">
+                {/* "All" option — show events with any tag */}
+                <button
+                  type="button"
+                  onClick={() => handleTagToggle(ALL_TAGS_FILTER_ID)}
+                  className={cn(
+                    'w-full text-left px-2 py-1.5 rounded text-sm transition-colors flex items-center justify-between font-medium',
+                    isAllTagsSelected
+                      ? 'bg-primary/10 text-primary'
+                      : 'hover:bg-muted'
+                  )}
+                  data-testid="tag-option-all"
+                >
+                  <span>{t('events.filter.allTags')}</span>
+                  {isAllTagsSelected && (
+                    <X className="h-3 w-3 flex-shrink-0 text-muted-foreground" />
+                  )}
+                </button>
+                {/* Individual tags */}
                 {availableTags.map((tag) => {
                   const isSelected = selectedTagIds.includes(tag.Id);
                   return (
@@ -174,8 +232,11 @@ export function EventsFilterPopover({
                         'w-full text-left px-2 py-1.5 rounded text-sm transition-colors flex items-center justify-between',
                         isSelected
                           ? 'bg-primary/10 text-primary'
-                          : 'hover:bg-muted'
+                          : isAllTagsSelected
+                            ? 'opacity-50 cursor-not-allowed'
+                            : 'hover:bg-muted'
                       )}
+                      disabled={isAllTagsSelected}
                       data-testid={`tag-option-${tag.Id}`}
                     >
                       <span className="truncate">{tag.Name}</span>

@@ -14,7 +14,7 @@ import { getMonitors } from '../api/monitors';
 import { useCurrentProfile } from '../hooks/useCurrentProfile';
 import { useAuthStore } from '../stores/auth';
 import { useSettingsStore } from '../stores/settings';
-import { useEventFilters } from '../hooks/useEventFilters';
+import { useEventFilters, ALL_TAGS_FILTER_ID } from '../hooks/useEventFilters';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { useEventPagination } from '../hooks/useEventPagination';
 import { useEventMontageGrid } from '../hooks/useEventMontageGrid';
@@ -86,6 +86,8 @@ export default function Events() {
     setStartDateInput,
     setEndDateInput,
     setFavoritesOnly,
+    onlyDetectedObjects,
+    setOnlyDetectedObjects,
     applyFilters,
     clearFilters,
     activeFilterCount,
@@ -200,11 +202,16 @@ export default function Events() {
       filtered = filtered.filter(({ Event }: any) => favoriteIds.includes(Event.Id));
     }
 
-    // Apply tag filter if tags are selected (client-side - ZM API doesn't support tag filtering)
+    // Apply tag filter if tags are selected (client-side)
     if (selectedTagIds.length > 0 && eventTagMap.size > 0) {
+      const isAllTagsFilter = selectedTagIds.includes(ALL_TAGS_FILTER_ID);
       filtered = filtered.filter(({ Event }: any) => {
         const eventTags = eventTagMap.get(Event.Id) || [];
-        // Event must have at least one of the selected tags
+        if (isAllTagsFilter) {
+          // "All" = show events that have at least one tag
+          return eventTags.length > 0;
+        }
+        // Otherwise event must have at least one of the selected tags
         return eventTags.some(tag => selectedTagIds.includes(tag.Id));
       });
     }
@@ -405,6 +412,8 @@ export default function Events() {
                   selectedTagIds={selectedTagIds}
                   onTagSelectionChange={setSelectedTagIds}
                   isLoadingTags={isLoadingTags}
+                  onlyDetectedObjects={onlyDetectedObjects}
+                  onOnlyDetectedObjectsChange={setOnlyDetectedObjects}
                 />
               </Popover>
 

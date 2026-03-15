@@ -194,7 +194,9 @@
     "filter": {
       "tags": "Etiquetas",
       "selectTags": "Seleccionar etiquetas...",
-      "noTags": "No hay etiquetas disponibles"
+      "noTags": "No hay etiquetas disponibles",
+      "allTags": "Con etiquetas",
+      "onlyDetectedObjects": "Solo objetos detectados"
     },
     "tags": {
       "loading": "Cargando etiquetas...",

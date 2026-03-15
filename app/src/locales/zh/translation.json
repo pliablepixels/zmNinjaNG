@@ -194,7 +194,9 @@
     "filter": {
       "tags": "标签",
       "selectTags": "选择标签...",
-      "noTags": "没有可用的标签"
+      "noTags": "没有可用的标签",
+      "allTags": "所有已标记",
+      "onlyDetectedObjects": "仅检测到的对象"
     },
     "tags": {
       "loading": "正在加载标签...",

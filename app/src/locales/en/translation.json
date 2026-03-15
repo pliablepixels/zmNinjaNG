@@ -194,7 +194,9 @@
     "filter": {
       "tags": "Tags",
       "selectTags": "Select tags...",
-      "noTags": "No tags available"
+      "noTags": "No tags available",
+      "allTags": "All Tagged",
+      "onlyDetectedObjects": "Only Detected Objects"
     },
     "tags": {
       "loading": "Loading tags...",

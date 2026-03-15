@@ -47,6 +47,7 @@ const applyFilters = vi.fn();
 const clearFilters = vi.fn();
 
 vi.mock('../../hooks/useEventFilters', () => ({
+  ALL_TAGS_FILTER_ID: '__all_tags__',
   useEventFilters: () => ({
     filters: {},
     selectedMonitorIds: [],

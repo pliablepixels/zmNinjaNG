@@ -1,21 +1,19 @@
 /**
  * Event Filters Hook
- * 
- * Manages the state and logic for filtering events in the Events view.
- * Synchronizes filter state with URL search parameters to support deep linking and browser history.
- * 
- * Features:
- * - Two-way binding between UI state and URL parameters
- * - Multi-monitor selection support
- * - Date range filtering (start/end)
- * - Active filter counting for UI badges
+ *
+ * Filter selections are saved to settings immediately on change (no Apply needed).
+ * Settings store is the source of truth for persistence.
+ * The "Filter" button syncs to URL params for deep linking.
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams, useLocation } from 'react-router-dom';
 import { useCurrentProfile } from './useCurrentProfile';
 import { useSettingsStore } from '../stores/settings';
 import type { EventFilters } from '../api/events';
+
+/** Sentinel value for the "All tagged events" filter option */
+export const ALL_TAGS_FILTER_ID = '__all_tags__';
 
 interface UseEventFiltersReturn {
   filters: EventFilters;
@@ -24,11 +22,13 @@ interface UseEventFiltersReturn {
   startDateInput: string;
   endDateInput: string;
   favoritesOnly: boolean;
+  onlyDetectedObjects: boolean;
   setSelectedMonitorIds: (ids: string[]) => void;
   setSelectedTagIds: (ids: string[]) => void;
   setStartDateInput: (date: string) => void;
   setEndDateInput: (date: string) => void;
   setFavoritesOnly: (enabled: boolean) => void;
+  setOnlyDetectedObjects: (enabled: boolean) => void;
   applyFilters: () => void;
   clearFilters: () => void;
   toggleMonitorSelection: (monitorId: string) => void;
@@ -36,271 +36,257 @@ interface UseEventFiltersReturn {
   activeFilterCount: number;
 }
 
-/**
- * Custom hook for managing event filters.
- * Handles URL params synchronization and local state.
- * 
- * @returns Object containing filter state and manipulation functions
- */
+function formatInputDate(isoString: string | null | undefined): string {
+  if (!isoString) return '';
+  try {
+    const date = new Date(isoString);
+    if (isNaN(date.getTime())) return isoString;
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  } catch {
+    return isoString;
+  }
+}
+
+/** Save a single filter field to the settings store (merge with existing) */
+function saveFilterField(profileId: string, field: string, value: unknown) {
+  const store = useSettingsStore.getState();
+  const current = store.getProfileSettings(profileId).eventsPageFilters;
+  store.updateProfileSettings(profileId, {
+    eventsPageFilters: { ...current, [field]: value },
+  });
+}
+
 export function useEventFilters(): UseEventFiltersReturn {
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const { currentProfile, settings } = useCurrentProfile();
-  const updateSettings = useSettingsStore((state) => state.updateProfileSettings);
 
-  // Derive filters from URL
+  // Local filter state
+  const [selectedMonitorIds, _setMonitorIds] = useState<string[]>([]);
+  const [startDateInput, _setStartDate] = useState('');
+  const [endDateInput, _setEndDate] = useState('');
+  const [favoritesOnly, _setFavoritesOnly] = useState(false);
+  const [selectedTagIds, _setTagIds] = useState<string[]>([]);
+  const [onlyDetectedObjects, _setOnlyDetected] = useState(false);
+
+  // Wrapped setters that also save to settings store immediately.
+  // No effects needed — saves happen synchronously on user action.
+  const profileIdRef = useRef<string | null>(null);
+  profileIdRef.current = currentProfile?.id ?? null;
+
+  const setSelectedMonitorIds = useCallback((ids: string[]) => {
+    _setMonitorIds(ids);
+    if (profileIdRef.current) saveFilterField(profileIdRef.current, 'monitorIds', ids);
+  }, []);
+
+  const setSelectedTagIds = useCallback((ids: string[]) => {
+    _setTagIds(ids);
+    if (profileIdRef.current) saveFilterField(profileIdRef.current, 'tagIds', ids);
+  }, []);
+
+  const setStartDateInput = useCallback((date: string) => {
+    _setStartDate(date);
+    if (profileIdRef.current) saveFilterField(profileIdRef.current, 'startDateTime', date);
+  }, []);
+
+  const setEndDateInput = useCallback((date: string) => {
+    _setEndDate(date);
+    if (profileIdRef.current) saveFilterField(profileIdRef.current, 'endDateTime', date);
+  }, []);
+
+  const setFavoritesOnly = useCallback((enabled: boolean) => {
+    _setFavoritesOnly(enabled);
+    if (profileIdRef.current) saveFilterField(profileIdRef.current, 'favoritesOnly', enabled);
+  }, []);
+
+  const setOnlyDetectedObjects = useCallback((enabled: boolean) => {
+    _setOnlyDetected(enabled);
+    if (profileIdRef.current) saveFilterField(profileIdRef.current, 'onlyDetectedObjects', enabled);
+  }, []);
+
+  // ----- Restore filters from settings on mount / profile change -----
+  // Does NOT trigger auto-save because it uses the raw _set* functions.
+  const prevSettingsRef = useRef<string>('');
+  useEffect(() => {
+    if (!currentProfile) return;
+
+    // Deep-link URL params take priority
+    if (
+      searchParams.has('monitorId') ||
+      searchParams.has('tagIds') ||
+      searchParams.has('startDateTime') ||
+      searchParams.has('endDateTime') ||
+      searchParams.has('favorites')
+    ) {
+      return;
+    }
+
+    const saved = settings.eventsPageFilters;
+    const settingsKey = JSON.stringify(saved);
+    if (settingsKey === prevSettingsRef.current) return;
+    prevSettingsRef.current = settingsKey;
+
+    _setMonitorIds(saved.monitorIds);
+    _setTagIds(saved.tagIds);
+    _setStartDate(saved.startDateTime);
+    _setEndDate(saved.endDateTime);
+    _setFavoritesOnly(saved.favoritesOnly);
+    _setOnlyDetected(saved.onlyDetectedObjects);
+  }, [currentProfile?.id, settings.eventsPageFilters, searchParams]);
+
+  // ----- Handle deep-link URL params -----
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      const hasUrlFilters =
+        searchParams.has('monitorId') ||
+        searchParams.has('tagIds') ||
+        searchParams.has('startDateTime') ||
+        searchParams.has('endDateTime') ||
+        searchParams.has('favorites');
+
+      if (hasUrlFilters) {
+        const m = searchParams.get('monitorId');
+        const t = searchParams.get('tagIds');
+        const s = searchParams.get('startDateTime');
+        const e = searchParams.get('endDateTime');
+        const f = searchParams.get('favorites');
+        _setMonitorIds(m ? m.split(',') : []);
+        _setTagIds(t ? t.split(',') : []);
+        _setStartDate(s ? formatInputDate(s) : '');
+        _setEndDate(e ? formatInputDate(e) : '');
+        _setFavoritesOnly(f === 'true');
+      }
+      return;
+    }
+
+    const monitorId = searchParams.get('monitorId');
+    const tagIds = searchParams.get('tagIds');
+    const startDT = searchParams.get('startDateTime');
+    const endDT = searchParams.get('endDateTime');
+    const favorites = searchParams.get('favorites');
+
+    if (monitorId !== null) _setMonitorIds(monitorId ? monitorId.split(',') : []);
+    if (tagIds !== null) _setTagIds(tagIds ? tagIds.split(',') : []);
+    if (startDT !== null) _setStartDate(formatInputDate(startDT));
+    if (endDT !== null) _setEndDate(formatInputDate(endDT));
+    if (favorites !== null) _setFavoritesOnly(favorites === 'true');
+  }, [searchParams]);
+
+  // Derive EventFilters from local state (not URL).
   const filters: EventFilters = useMemo(
     () => ({
       limit: settings.defaultEventLimit || 100,
       sort: searchParams.get('sort') || 'StartDateTime',
       direction: (searchParams.get('direction') as 'asc' | 'desc') || 'desc',
-      monitorId: searchParams.get('monitorId') || undefined,
-      startDateTime: searchParams.get('startDateTime') || undefined,
-      endDateTime: searchParams.get('endDateTime') || undefined,
+      monitorId: selectedMonitorIds.length > 0 ? selectedMonitorIds.join(',') : undefined,
+      startDateTime: startDateInput || undefined,
+      endDateTime: endDateInput || undefined,
+      notesRegexp: onlyDetectedObjects ? 'detected:' : undefined,
     }),
-    [searchParams, settings.defaultEventLimit]
+    [searchParams, settings.defaultEventLimit, selectedMonitorIds, startDateInput, endDateInput, onlyDetectedObjects]
   );
 
-  // Helper to safely format valid ISO strings to local datetime for inputs
-  const formatInputDate = (isoString: string | null | undefined): string => {
-    if (!isoString) return '';
-    try {
-      const date = new Date(isoString);
-      if (isNaN(date.getTime())) return isoString; // Return as-is if invalid date
-
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-      return `${year}-${month}-${day}T${hours}:${minutes}`;
-    } catch (e) {
-      return isoString;
-    }
-  };
-
-  // Local state for filter inputs
-  // Initialize from URL params if present, otherwise use saved settings
-  const [selectedMonitorIds, setSelectedMonitorIds] = useState<string[]>(() => {
-    const urlMonitorId = filters.monitorId;
-    if (urlMonitorId) return urlMonitorId.split(',');
-    return settings.eventsPageFilters.monitorIds;
-  });
-  const [startDateInput, setStartDateInput] = useState(() => {
-    const urlStart = filters.startDateTime;
-    if (urlStart) return formatInputDate(urlStart);
-    return settings.eventsPageFilters.startDateTime;
-  });
-  const [endDateInput, setEndDateInput] = useState(() => {
-    const urlEnd = filters.endDateTime;
-    if (urlEnd) return formatInputDate(urlEnd);
-    return settings.eventsPageFilters.endDateTime;
-  });
-  const [favoritesOnly, setFavoritesOnly] = useState(() => {
-    const urlFavorites = searchParams.get('favorites');
-    if (urlFavorites !== null) return urlFavorites === 'true';
-    return settings.eventsPageFilters.favoritesOnly;
-  });
-
-  // Local state for tag filter
-  const [selectedTagIds, setSelectedTagIds] = useState<string[]>(() => {
-    const urlTagIds = searchParams.get('tagIds');
-    if (urlTagIds) return urlTagIds.split(',');
-    return settings.eventsPageFilters.tagIds;
-  });
-
-  // Sync saved filters to URL on initial mount if URL has no filter params
-  useEffect(() => {
-    const hasUrlFilters =
-      searchParams.get('monitorId') ||
-      searchParams.get('tagIds') ||
-      searchParams.get('startDateTime') ||
-      searchParams.get('endDateTime') ||
-      searchParams.get('favorites');
-
-    // If no URL filters, apply saved settings to URL
-    if (!hasUrlFilters && currentProfile) {
-      const savedFilters = settings.eventsPageFilters;
-      const hasFilterContent =
-        savedFilters.monitorIds.length > 0 ||
-        savedFilters.tagIds.length > 0 ||
-        savedFilters.startDateTime ||
-        savedFilters.endDateTime ||
-        savedFilters.favoritesOnly;
-
-      if (hasFilterContent) {
-        const newParams: Record<string, string> = {
-          sort: 'StartDateTime',
-          direction: 'desc',
-        };
-        if (savedFilters.monitorIds.length > 0) {
-          newParams.monitorId = savedFilters.monitorIds.join(',');
-        }
-        if (savedFilters.tagIds.length > 0) {
-          newParams.tagIds = savedFilters.tagIds.join(',');
-        }
-        if (savedFilters.startDateTime) {
-          newParams.startDateTime = savedFilters.startDateTime;
-        }
-        if (savedFilters.endDateTime) {
-          newParams.endDateTime = savedFilters.endDateTime;
-        }
-        if (savedFilters.favoritesOnly) {
-          newParams.favorites = 'true';
-        }
-
-        setSearchParams(newParams, { replace: true });
-      }
-    }
-  }, []); // Run only on mount
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-
-  // Update local inputs when URL params change (e.g. navigation)
-  useEffect(() => {
-    const monitorId = searchParams.get('monitorId');
-    setSelectedMonitorIds(monitorId ? monitorId.split(',') : []);
-
-    // Only update inputs from URL if they differ significantly to avoid cursor jumping
-    // But for initial navigation from Heatmap, this ensures inputs are populated
-    const newStart = searchParams.get('startDateTime');
-    const newEnd = searchParams.get('endDateTime');
-    if (newStart) setStartDateInput(formatInputDate(newStart));
-    if (newEnd) setEndDateInput(formatInputDate(newEnd));
-
-    const favorites = searchParams.get('favorites') === 'true';
-    setFavoritesOnly(favorites);
-
-    const tagIds = searchParams.get('tagIds');
-    setSelectedTagIds(tagIds ? tagIds.split(',') : []);
-  }, [searchParams]);
-
-  // Apply filters to URL and save to settings
+  // "Apply" syncs current filters to URL for deep linking / sharing.
   const applyFilters = useCallback(() => {
-    const newParams: Record<string, string> = {
-      sort: filters.sort || 'StartDateTime',
-      direction: filters.direction || 'desc',
-    };
+    const newParams = new URLSearchParams(searchParams);
+    if (!newParams.has('sort')) newParams.set('sort', 'StartDateTime');
+    if (!newParams.has('direction')) newParams.set('direction', 'desc');
+
     if (selectedMonitorIds.length > 0) {
-      newParams.monitorId = selectedMonitorIds.join(',');
+      newParams.set('monitorId', selectedMonitorIds.join(','));
+    } else {
+      newParams.delete('monitorId');
     }
-    if (startDateInput) newParams.startDateTime = startDateInput;
-    if (endDateInput) newParams.endDateTime = endDateInput;
-    if (favoritesOnly) newParams.favorites = 'true';
+    if (startDateInput) {
+      newParams.set('startDateTime', startDateInput);
+    } else {
+      newParams.delete('startDateTime');
+    }
+    if (endDateInput) {
+      newParams.set('endDateTime', endDateInput);
+    } else {
+      newParams.delete('endDateTime');
+    }
+    if (favoritesOnly) {
+      newParams.set('favorites', 'true');
+    } else {
+      newParams.delete('favorites');
+    }
     if (selectedTagIds.length > 0) {
-      newParams.tagIds = selectedTagIds.join(',');
+      newParams.set('tagIds', selectedTagIds.join(','));
+    } else {
+      newParams.delete('tagIds');
     }
 
-    // Preserve navigation state when updating search params
-    setSearchParams(newParams, {
-      replace: true,
-      state: location.state,
-    });
-
-    // Save filters to settings for persistence
-    if (currentProfile) {
-      updateSettings(currentProfile.id, {
-        eventsPageFilters: {
-          monitorIds: selectedMonitorIds,
-          tagIds: selectedTagIds,
-          startDateTime: startDateInput,
-          endDateTime: endDateInput,
-          favoritesOnly,
-        },
-      });
-    }
+    setSearchParams(newParams, { replace: true, state: location.state });
   }, [
-    selectedMonitorIds,
-    selectedTagIds,
-    startDateInput,
-    endDateInput,
-    favoritesOnly,
-    filters.sort,
-    filters.direction,
-    setSearchParams,
-    location.state,
-    currentProfile,
-    updateSettings,
+    selectedMonitorIds, selectedTagIds, startDateInput, endDateInput, favoritesOnly,
+    searchParams, setSearchParams, location.state,
   ]);
 
-  // Clear all filters
   const clearFilters = useCallback(() => {
+    // Use wrapped setters so clearing also saves to settings
     setSelectedMonitorIds([]);
     setSelectedTagIds([]);
     setStartDateInput('');
     setEndDateInput('');
     setFavoritesOnly(false);
-    setSearchParams(
-      {
-        sort: 'StartDateTime',
-        direction: 'desc',
-      },
-      {
-        replace: true,
-        state: location.state,
-      }
-    );
+    setOnlyDetectedObjects(false);
 
-    // Clear saved filters from settings
-    if (currentProfile) {
-      updateSettings(currentProfile.id, {
-        eventsPageFilters: {
-          monitorIds: [],
-          tagIds: [],
-          startDateTime: '',
-          endDateTime: '',
-          favoritesOnly: false,
-        },
-      });
-    }
-  }, [setSearchParams, location.state, currentProfile, updateSettings]);
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('sort', 'StartDateTime');
+    newParams.set('direction', 'desc');
+    newParams.delete('monitorId');
+    newParams.delete('tagIds');
+    newParams.delete('startDateTime');
+    newParams.delete('endDateTime');
+    newParams.delete('favorites');
+    setSearchParams(newParams, { replace: true, state: location.state });
+  }, [searchParams, setSearchParams, location.state, setSelectedMonitorIds, setSelectedTagIds, setStartDateInput, setEndDateInput, setFavoritesOnly, setOnlyDetectedObjects]);
 
-  // Toggle monitor selection
   const toggleMonitorSelection = useCallback((monitorId: string) => {
-    setSelectedMonitorIds((prev) =>
-      prev.includes(monitorId)
+    _setMonitorIds((prev) => {
+      const next = prev.includes(monitorId)
         ? prev.filter((id) => id !== monitorId)
-        : [...prev, monitorId]
-    );
+        : [...prev, monitorId];
+      if (profileIdRef.current) saveFilterField(profileIdRef.current, 'monitorIds', next);
+      return next;
+    });
   }, []);
 
-  // Toggle tag selection
   const toggleTagSelection = useCallback((tagId: string) => {
-    setSelectedTagIds((prev) =>
-      prev.includes(tagId)
+    _setTagIds((prev) => {
+      const next = prev.includes(tagId)
         ? prev.filter((id) => id !== tagId)
-        : [...prev, tagId]
-    );
+        : [...prev, tagId];
+      if (profileIdRef.current) saveFilterField(profileIdRef.current, 'tagIds', next);
+      return next;
+    });
   }, []);
 
-  // Calculate active filter count
   const activeFilterCount = useMemo(
     () =>
       [
-        selectedMonitorIds.length > 0 ? 'monitors' : null,
-        selectedTagIds.length > 0 ? 'tags' : null,
-        filters.startDateTime,
-        filters.endDateTime,
-        favoritesOnly ? 'favorites' : null,
+        selectedMonitorIds.length > 0 ? 1 : null,
+        selectedTagIds.length > 0 ? 1 : null,
+        startDateInput ? 1 : null,
+        endDateInput ? 1 : null,
+        favoritesOnly ? 1 : null,
+        onlyDetectedObjects ? 1 : null,
       ].filter(Boolean).length,
-    [selectedMonitorIds.length, selectedTagIds.length, filters.startDateTime, filters.endDateTime, favoritesOnly]
+    [selectedMonitorIds.length, selectedTagIds.length, startDateInput, endDateInput, favoritesOnly, onlyDetectedObjects]
   );
 
   return {
-    filters,
-    selectedMonitorIds,
-    selectedTagIds,
-    startDateInput,
-    endDateInput,
-    favoritesOnly,
-    setSelectedMonitorIds,
-    setSelectedTagIds,
-    setStartDateInput,
-    setEndDateInput,
-    setFavoritesOnly,
-    applyFilters,
-    clearFilters,
-    toggleMonitorSelection,
-    toggleTagSelection,
-    activeFilterCount,
+    filters, selectedMonitorIds, selectedTagIds, startDateInput, endDateInput, favoritesOnly, onlyDetectedObjects,
+    setSelectedMonitorIds, setSelectedTagIds, setStartDateInput, setEndDateInput, setFavoritesOnly, setOnlyDetectedObjects,
+    applyFilters, clearFilters, toggleMonitorSelection, toggleTagSelection, activeFilterCount,
   };
 }

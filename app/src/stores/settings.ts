@@ -49,6 +49,7 @@ export interface ProfileSettings {
     startDateTime: string;
     endDateTime: string;
     favoritesOnly: boolean;
+    onlyDetectedObjects: boolean;
   };
   disableLogRedaction: boolean;
   lastRoute: string; // Last visited route for this profile
@@ -136,6 +137,7 @@ export const DEFAULT_SETTINGS: ProfileSettings = {
     startDateTime: '',
     endDateTime: '',
     favoritesOnly: false,
+    onlyDetectedObjects: false,
   },
   disableLogRedaction: false,
   lastRoute: '/monitors',
